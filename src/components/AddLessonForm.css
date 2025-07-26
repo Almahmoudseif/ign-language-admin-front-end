@@ -1,0 +1,60 @@
+.add-lesson-form {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: auto;
+}
+
+.add-lesson-form h3 {
+  margin-bottom: 20px;
+  text-align: center;
+  color: #007bff;
+}
+
+.add-lesson-form label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.add-lesson-form input,
+.add-lesson-form textarea,
+.add-lesson-form select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.add-lesson-form textarea {
+  resize: vertical;
+  height: 100px;
+}
+
+.add-lesson-form button {
+  margin-top: 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+}
+
+.add-lesson-form button:hover {
+  background-color: #0056b3;
+}
+
+.form-message {
+  margin-top: 15px;
+  text-align: center;
+  color: green;
+  font-weight: bold;
+}

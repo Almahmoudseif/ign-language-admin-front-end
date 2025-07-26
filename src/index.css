@@ -1,0 +1,26 @@
+/* Reset default browser styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Global font and background */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f9;
+  color: #333;
+}
+
+/* Make links look clean */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Optional global button styles */
+button {
+  font-family: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}

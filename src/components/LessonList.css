@@ -1,0 +1,98 @@
+.lesson-list-container {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 20px auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.lesson-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.lesson-list-header h3 {
+  margin: 0;
+  color: #007bff;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.filter-section select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.lesson-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lesson-item {
+  background-color: #f9f9f9;
+  border-left: 5px solid #007bff;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  position: relative;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.lesson-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.lesson-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.lesson-description {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.lesson-level {
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.delete-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
