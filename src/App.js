@@ -20,8 +20,10 @@ import MyResults from './Teacher/MyResults';
 import MyStudents from './Teacher/MyStudents';
 import MyAssessments from './Teacher/MyAssessments';
 import TeacherLessonUpload from './Teacher/TeacherLessonUpload';
+import TeacherLessonUploadImage from './Teacher/TeacherLessonUploadImage'; // ✅ Hii imeongezwa
 import CreateAssessment from './Teacher/CreateAssessment';
-import AddQuestionForm from './Teacher/AddQuestionForm'; // ✅ Hili ndilo jina sahihi
+import AddQuestionForm from './Teacher/AddQuestionForm';
+import LessonImageList from './Teacher/LessonImageList';
 
 const App = () => {
   return (
@@ -44,13 +46,17 @@ const App = () => {
           <Route index element={<Navigate to="/teacher-dashboard/lessons" replace />} />
           <Route path="lessons" element={<MyLessons />} />
           <Route path="upload-lesson" element={<TeacherLessonUpload />} />
+          <Route path="upload-lesson-image" element={<TeacherLessonUploadImage />} /> {/* ✅ Hii imeongezwa */}
           <Route path="exams" element={<MyExams />} />
           <Route path="results" element={<MyResults />} />
           <Route path="students" element={<MyStudents />} />
           <Route path="assessments" element={<MyAssessments />} />
           <Route path="create-assessment" element={<CreateAssessment />} />
-          <Route path="add-question" element={<AddQuestionForm />} /> {/* ✅ Imewekwa sahihi */}
+          <Route path="add-question" element={<AddQuestionForm />} /> 
+         <Route path="lesson-images" element={<LessonImageList />} />
+ 
         </Route>
+      
 
         {/* Catch-all route */}
         <Route path="*" element={<div>404 - Page Not Found</div>} />

@@ -23,7 +23,7 @@ const TeacherLessonUpload = () => {
     formData.append('file', video); // Hii inalingana na @RequestParam("file")
 
     try {
-      const response = await axios.post(
+      await axios.post(
         'http://192.168.43.33:8080/api/lessons/upload',
         formData,
         {

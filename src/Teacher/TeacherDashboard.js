@@ -14,6 +14,12 @@ const TeacherDashboard = () => {
             <NavLink to="upload-lesson" style={navStyle}>⬆️ Upload Lesson</NavLink>
           </li>
           <li>
+            <NavLink to="upload-lesson-image" style={navStyle}>🖼️ Upload Lesson Image</NavLink>
+          </li>
+          <li>
+            <NavLink to="lesson-images" style={navStyle}>📷 View Lesson Images</NavLink>
+          </li>  {/* === Hii ni addition mpya === */}
+          <li>
             <NavLink to="exams" style={navStyle}>📝 Exams</NavLink>
           </li>
           <li>

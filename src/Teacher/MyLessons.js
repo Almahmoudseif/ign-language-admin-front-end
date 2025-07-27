@@ -30,6 +30,17 @@ const MyLessons = () => {
             <h3>{lesson.title}</h3>
             <p><strong>Description:</strong> {lesson.description}</p>
             <p><strong>Level:</strong> {lesson.level}</p>
+
+            {/* Onyesha picha kama ipo */}
+            {lesson.imageUrl && (
+              <img
+                src={`http://192.168.43.33:8080${lesson.imageUrl}`}
+                alt={lesson.title}
+                style={{ width: '100%', maxWidth: '400px', marginBottom: '10px' }}
+              />
+            )}
+
+            {/* Onyesha video kama ipo */}
             {lesson.videoPath ? (
               <video width="320" height="240" controls>
                 <source
