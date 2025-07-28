@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const AddQuestionForm = ({ assessmentId }) => {
+const AddQuestionForm = ({ assessmentId, onQuestionAdded }) => {
   const [questionText, setQuestionText] = useState('');
   const [optionA, setOptionA] = useState('');
   const [optionB, setOptionB] = useState('');
@@ -14,34 +14,44 @@ const AddQuestionForm = ({ assessmentId }) => {
     e.preventDefault();
 
     if (!questionText || !optionA || !optionB || !optionC || !optionD || !correctOption) {
-      setMessage('Tafadhali jaza sehemu zote');
+      setMessage('❌ Tafadhali jaza sehemu zote.');
+      return;
+    }
+
+    const correctOptionUpper = correctOption.toUpperCase();
+    if (!['A', 'B', 'C', 'D'].includes(correctOptionUpper)) {
+      setMessage('❌ Chaguo sahihi lazima iwe mojawapo kati ya A, B, C au D.');
       return;
     }
 
     try {
       await axios.post('http://192.168.43.33:8080/api/questions', {
-        assessmentId: assessmentId,
+        assessmentId,
         content: questionText,
         imageUrl: null,
         videoUrl: null,
         answers: [
-          { content: optionA, correct: correctOption === 'A' },
-          { content: optionB, correct: correctOption === 'B' },
-          { content: optionC, correct: correctOption === 'C' },
-          { content: optionD, correct: correctOption === 'D' }
-        ]
+          { content: optionA, correct: correctOptionUpper === 'A' },
+          { content: optionB, correct: correctOptionUpper === 'B' },
+          { content: optionC, correct: correctOptionUpper === 'C' },
+          { content: optionD, correct: correctOptionUpper === 'D' },
+        ],
       });
 
-      setMessage('✅ Swali limeongezwa kikamilifu');
+      setMessage('✅ Swali limeongezwa kikamilifu.');
       setQuestionText('');
       setOptionA('');
       setOptionB('');
       setOptionC('');
       setOptionD('');
       setCorrectOption('');
+
+      if (onQuestionAdded) {
+        onQuestionAdded();
+      }
     } catch (error) {
-      console.error(error);
-      setMessage('❌ Kuna tatizo wakati wa kuwasilisha');
+      console.error('Error:', error.response?.data || error.message);
+      setMessage('❌ Kuna tatizo wakati wa kuwasilisha swali.');
     }
   };
 
@@ -50,52 +60,13 @@ const AddQuestionForm = ({ assessmentId }) => {
       <h2>Ongeza Swali Jipya</h2>
       {message && <p>{message}</p>}
       <form onSubmit={handleSubmit} style={styles.form}>
-        <input
-          type="text"
-          placeholder="Swali"
-          value={questionText}
-          onChange={(e) => setQuestionText(e.target.value)}
-          style={styles.input}
-        />
-        <input
-          type="text"
-          placeholder="Chaguo A"
-          value={optionA}
-          onChange={(e) => setOptionA(e.target.value)}
-          style={styles.input}
-        />
-        <input
-          type="text"
-          placeholder="Chaguo B"
-          value={optionB}
-          onChange={(e) => setOptionB(e.target.value)}
-          style={styles.input}
-        />
-        <input
-          type="text"
-          placeholder="Chaguo C"
-          value={optionC}
-          onChange={(e) => setOptionC(e.target.value)}
-          style={styles.input}
-        />
-        <input
-          type="text"
-          placeholder="Chaguo D"
-          value={optionD}
-          onChange={(e) => setOptionD(e.target.value)}
-          style={styles.input}
-        />
-        <input
-          type="text"
-          placeholder="Chaguo Sahihi (A, B, C, au D)"
-          value={correctOption}
-          onChange={(e) => setCorrectOption(e.target.value)}
-          style={styles.input}
-        />
-
-        <button type="submit" style={styles.button}>
-          Wasilisha Swali
-        </button>
+        <input type="text" placeholder="Swali" value={questionText} onChange={(e) => setQuestionText(e.target.value)} style={styles.input} />
+        <input type="text" placeholder="Chaguo A" value={optionA} onChange={(e) => setOptionA(e.target.value)} style={styles.input} />
+        <input type="text" placeholder="Chaguo B" value={optionB} onChange={(e) => setOptionB(e.target.value)} style={styles.input} />
+        <input type="text" placeholder="Chaguo C" value={optionC} onChange={(e) => setOptionC(e.target.value)} style={styles.input} />
+        <input type="text" placeholder="Chaguo D" value={optionD} onChange={(e) => setOptionD(e.target.value)} style={styles.input} />
+        <input type="text" placeholder="Chaguo Sahihi (A - D)" value={correctOption} onChange={(e) => setCorrectOption(e.target.value)} style={styles.input} />
+        <button type="submit" style={styles.button}>Wasilisha Swali</button>
       </form>
     </div>
   );

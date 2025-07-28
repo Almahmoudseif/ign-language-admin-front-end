@@ -71,6 +71,10 @@ const MyAssessments = () => {
     }
   };
 
+  const handleViewDetails = (id) => {
+    navigate(`/teacher-dashboard/assessment/${id}`);
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.header}>
@@ -124,6 +128,12 @@ const MyAssessments = () => {
                     onClick={() => handleDelete(a.id)}
                   >
                     Delete
+                  </button>
+                  <button
+                    style={{ ...styles.actionBtn, backgroundColor: 'orange' }}
+                    onClick={() => handleViewDetails(a.id)}
+                  >
+                    Details
                   </button>
                 </td>
               </tr>
