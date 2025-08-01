@@ -4,69 +4,105 @@ import axios from 'axios';
 const MyLessons = () => {
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
+  const BASE_URL = 'http://192.168.43.33:8080';
 
   useEffect(() => {
-    axios.get('http://192.168.43.33:8080/api/lessons')
-      .then(res => {
+    const fetchLessons = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/api/lessons`);
         setLessons(res.data);
-        setLoading(false);
-      })
-      .catch(err => {
+      } catch (err) {
         console.error('Error fetching lessons:', err);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+    fetchLessons();
   }, []);
 
-  if (loading) return <p>Loading lessons...</p>;
+  const getMediaUrl = (path) => {
+    if (!path) return null;
+    const fullUrl = path.startsWith('http') ? path : `${BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
+    return encodeURI(fullUrl);
+  };
+
+  const imageLessons = lessons.filter(lesson => lesson.imageUrl);
+  const videoLessons = lessons.filter(lesson => lesson.videoUrl);
+
+  if (loading) return <p>Inapakia masomo...</p>;
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>My Lessons</h2>
-      {lessons.length === 0 ? (
-        <p>No lessons found.</p>
-      ) : (
-        lessons.map(lesson => (
-          <div key={lesson.id} style={styles.card}>
-            <h3>{lesson.title}</h3>
-            <p><strong>Description:</strong> {lesson.description}</p>
-            <p><strong>Level:</strong> {lesson.level}</p>
-
-            {/* Onyesha picha kama ipo */}
-            {lesson.imageUrl && (
+    <div style={styles.container}>
+      <div style={styles.column}>
+        <h2>Masomo ya Picha</h2>
+        {imageLessons.length === 0 ? (
+          <p>Hakuna masomo yenye picha.</p>
+        ) : (
+          imageLessons.map(lesson => (
+            <div key={lesson.id} style={styles.card}>
+              <h4>{lesson.title}</h4>
               <img
-                src={`http://192.168.43.33:8080${lesson.imageUrl}`}
+                src={getMediaUrl(lesson.imageUrl)}
                 alt={lesson.title}
-                style={{ width: '100%', maxWidth: '400px', marginBottom: '10px' }}
+                style={styles.image}
+                onError={(e) => {
+                  e.target.src = 'https://via.placeholder.com/400x250?text=Picha+haipo';
+                }}
               />
-            )}
+              <p>{lesson.description}</p>
+            </div>
+          ))
+        )}
+      </div>
 
-            {/* Onyesha video kama ipo */}
-            {lesson.videoPath ? (
-              <video width="320" height="240" controls>
-                <source
-                  src={`http://192.168.43.33:8080/${lesson.videoPath}`}
-                  type="video/mp4"
-                />
-                Your browser does not support the video tag.
+      <div style={styles.column}>
+        <h2>Masomo ya Video</h2>
+        {videoLessons.length === 0 ? (
+          <p>Hakuna masomo yenye video.</p>
+        ) : (
+          videoLessons.map(lesson => (
+            <div key={lesson.id} style={styles.card}>
+              <h4>{lesson.title}</h4>
+              <video width="100%" height="auto" controls>
+                <source src={getMediaUrl(lesson.videoUrl)} type="video/mp4" />
+                Kivinjari chako hakiungi mkono video.
               </video>
-            ) : (
-              <p>No video uploaded.</p>
-            )}
-          </div>
-        ))
-      )}
+              <p>{lesson.description}</p>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 };
 
 const styles = {
+  container: {
+    display: 'flex',
+    gap: '40px',
+    padding: '20px',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+  },
+  column: {
+    flex: 1,
+    minWidth: '300px',
+  },
   card: {
-    border: '1px solid #ddd',
+    border: '1px solid #ccc',
     borderRadius: '10px',
     padding: '15px',
     marginBottom: '20px',
-    boxShadow: '2px 2px 10px rgba(0,0,0,0.1)',
-  }
+    backgroundColor: '#f9f9f9',
+    boxShadow: '2px 2px 8px rgba(0,0,0,0.1)',
+  },
+  image: {
+    width: '100%',
+    maxHeight: '250px',
+    objectFit: 'cover',
+    borderRadius: '8px',
+    marginBottom: '10px',
+  },
 };
 
 export default MyLessons;

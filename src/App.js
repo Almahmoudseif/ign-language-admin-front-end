@@ -24,7 +24,9 @@ import TeacherLessonUploadImage from './Teacher/TeacherLessonUploadImage';
 import CreateAssessment from './Teacher/CreateAssessment';
 import AddQuestionForm from './Teacher/AddQuestionForm';
 import LessonImageList from './Teacher/LessonImageList';
-import TeacherAssessmentDetail from './Teacher/TeacherAssessmentDetail'; // ✅ Hii umeongezwa
+import LessonVideoList from './Teacher/LessonVideoList';
+import VideoUploadOnly from './Teacher/VideoUploadOnly';
+import TeacherAssessmentDetail from './Teacher/TeacherAssessmentDetail';
 
 const App = () => {
   return (
@@ -48,16 +50,19 @@ const App = () => {
           <Route path="lessons" element={<MyLessons />} />
           <Route path="upload-lesson" element={<TeacherLessonUpload />} />
           <Route path="upload-lesson-image" element={<TeacherLessonUploadImage />} />
+          <Route path="lesson-images" element={<LessonImageList />} />
+          <Route path="lesson-videos" element={<LessonVideoList />} />
+          <Route path="upload-video" element={<VideoUploadOnly />} />
           <Route path="exams" element={<MyExams />} />
           <Route path="results" element={<MyResults />} />
           <Route path="students" element={<MyStudents />} />
           <Route path="assessments" element={<MyAssessments />} />
           <Route path="create-assessment" element={<CreateAssessment />} />
-          <Route path="assessment/:assessmentId" element={<TeacherAssessmentDetail />} /> {/* ✅ New */}
-          <Route path="lesson-images" element={<LessonImageList />} />
+          <Route path="assessment/:assessmentId" element={<TeacherAssessmentDetail />} />
+          <Route path="add-question" element={<AddQuestionForm />} />
         </Route>
 
-        {/* Catch-all route */}
+        {/* Catch-all */}
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
     </Router>

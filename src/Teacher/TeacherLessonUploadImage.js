@@ -10,9 +10,8 @@ const TeacherLessonUploadImage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!image) {
-      setMessage('Please select an image file.');
+      setMessage('Tafadhali chagua picha.');
       return;
     }
 
@@ -20,51 +19,52 @@ const TeacherLessonUploadImage = () => {
     formData.append('title', title);
     formData.append('description', description);
     formData.append('level', level);
-    formData.append('file', image);
+    formData.append('image', image);
 
     try {
       await axios.post('http://192.168.43.33:8080/api/lessons/upload/image', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       });
-      setMessage('✅ Lesson uploaded successfully!');
+      setMessage('✅ Picha imepakiwa kikamilifu!');
       setTitle('');
       setDescription('');
       setLevel('');
       setImage(null);
     } catch (err) {
       console.error(err);
-      setMessage('❌ Failed to upload lesson');
+      setMessage('❌ Imeshindikana kupakia picha.');
     }
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: 'auto', padding: '20px' }}>
-      <h2>📷 Upload Lesson Image</h2>
+    <div style={styles.container}>
+      <h2>Pakia Picha ya Somo</h2>
       {message && <p>{message}</p>}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={styles.form}>
         <input
           type="text"
-          placeholder="Lesson Title"
+          placeholder="Kichwa cha somo"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          style={{ width: '100%', marginBottom: '10px' }}
+          style={styles.input}
         />
         <textarea
-          placeholder="Description"
+          placeholder="Maelezo ya somo"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
-          rows="3"
-          style={{ width: '100%', marginBottom: '10px' }}
+          style={styles.textarea}
         />
         <select
           value={level}
           onChange={(e) => setLevel(e.target.value)}
           required
-          style={{ width: '100%', marginBottom: '10px' }}
+          style={styles.input}
         >
-          <option value="">Select Level</option>
+          <option value="">Chagua kiwango</option>
           <option value="BEGINNER">Beginner</option>
           <option value="INTERMEDIATE">Intermediate</option>
           <option value="ADVANCED">Advanced</option>
@@ -74,12 +74,37 @@ const TeacherLessonUploadImage = () => {
           accept="image/*"
           onChange={(e) => setImage(e.target.files[0])}
           required
-          style={{ marginBottom: '10px' }}
+          style={styles.input}
         />
-        <button type="submit">Upload</button>
+        <button type="submit" style={styles.button}>
+          Pakia Picha
+        </button>
       </form>
     </div>
   );
+};
+
+const styles = {
+  container: {
+    padding: '20px',
+    maxWidth: '600px',
+    margin: 'auto',
+    backgroundColor: '#f1f1f1',
+    borderRadius: '10px',
+    boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+  },
+  form: { display: 'flex', flexDirection: 'column', gap: '15px' },
+  input: { padding: '10px', fontSize: '16px' },
+  textarea: { padding: '10px', height: '100px' },
+  button: {
+    padding: '10px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    fontSize: '16px',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+  },
 };
 
 export default TeacherLessonUploadImage;
