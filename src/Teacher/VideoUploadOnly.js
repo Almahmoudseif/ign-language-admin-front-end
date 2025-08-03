@@ -18,7 +18,7 @@ const VideoUploadOnly = () => {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
-    formData.append('level', level);
+    formData.append('level', level.toUpperCase()); // Hii ndiyo line iliyoongezwa
     formData.append('video', video);
 
     try {

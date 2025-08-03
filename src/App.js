@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import AdminLoginPage from './components/AdminLoginPage';
 import AdminDashboard from './components/AdminDashboard';
 import DashboardHome from './components/DashboardHome';
-import Teachers from './components/Teachers';
+import Teachers from './components/Teachers';     
 import Lessons from './components/Lessons';
 import Assessments from './components/Assessments';
 import Results from './components/Results';
@@ -25,8 +25,11 @@ import CreateAssessment from './Teacher/CreateAssessment';
 import AddQuestionForm from './Teacher/AddQuestionForm';
 import LessonImageList from './Teacher/LessonImageList';
 import LessonVideoList from './Teacher/LessonVideoList';
-import VideoUploadOnly from './Teacher/VideoUploadOnly';
 import TeacherAssessmentDetail from './Teacher/TeacherAssessmentDetail';
+import EditLessonsList from './Teacher/EditLessonsList';
+import EditLessonPage from './Teacher/EditLessonPage';
+import { VideoUploadOnly } from './Teacher/TeacherDashboard';
+
 
 const App = () => {
   return (
@@ -52,7 +55,6 @@ const App = () => {
           <Route path="upload-lesson-image" element={<TeacherLessonUploadImage />} />
           <Route path="lesson-images" element={<LessonImageList />} />
           <Route path="lesson-videos" element={<LessonVideoList />} />
-          <Route path="upload-video" element={<VideoUploadOnly />} />
           <Route path="exams" element={<MyExams />} />
           <Route path="results" element={<MyResults />} />
           <Route path="students" element={<MyStudents />} />
@@ -60,6 +62,10 @@ const App = () => {
           <Route path="create-assessment" element={<CreateAssessment />} />
           <Route path="assessment/:assessmentId" element={<TeacherAssessmentDetail />} />
           <Route path="add-question" element={<AddQuestionForm />} />
+          <Route path="edit-lessons" element={<EditLessonsList />} />
+          <Route path="edit-lesson/:id" element={<EditLessonPage />} /> 
+          <Route path="upload-video" element={<VideoUploadOnly />} />
+
         </Route>
 
         {/* Catch-all */}

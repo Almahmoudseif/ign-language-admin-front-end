@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import LessonImageList from './LessonImageList';
-import LessonVideoList from './LessonVideoList'; // ✅ Hii hapa imeongezwa
 
-// VideoUploadOnly component
-const VideoUploadOnly = () => {
+// VideoUploadOnly component (exported separately)
+export const VideoUploadOnly = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [level, setLevel] = useState('');
@@ -103,13 +101,14 @@ const TeacherDashboard = () => {
           <li><NavLink to="upload-lesson-image" style={navStyle}>🖼️ Upload Lesson Image</NavLink></li>
           <li><NavLink to="lesson-images" style={navStyle}>📷 View Lesson Images</NavLink></li>
           <li><NavLink to="upload-video" style={navStyle}>📹 Upload Video</NavLink></li>
-          <li><NavLink to="lesson-videos" style={navStyle}>📺 View Lesson Videos</NavLink></li> {/* ✅ New Link */}
+          <li><NavLink to="lesson-videos" style={navStyle}>📺 View Lesson Videos</NavLink></li>
           <li><NavLink to="exams" style={navStyle}>📝 Exams</NavLink></li>
           <li><NavLink to="results" style={navStyle}>📊 Results</NavLink></li>
           <li><NavLink to="students" style={navStyle}>👥 My Students</NavLink></li>
           <li><NavLink to="assessments" style={navStyle}>📂 Assessments</NavLink></li>
           <li><NavLink to="create-assessment" style={navStyle}>➕ Create Assessment</NavLink></li>
           <li><NavLink to="add-question" style={navStyle}>➕ Add Question</NavLink></li>
+          <li><NavLink to="edit-lessons" style={navStyle}>✏️ Edit Lessons List</NavLink></li>
         </ul>
       </div>
       <div style={styles.content}>
@@ -203,5 +202,4 @@ const styles = {
   },
 };
 
-export { VideoUploadOnly };
 export default TeacherDashboard;
