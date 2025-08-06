@@ -58,7 +58,7 @@ const styles = {
   },
   editLink: {
     textDecoration: 'none',
-    color: '#007bff',
+    color: '#007bff', 
     fontWeight: 'bold',
     cursor: 'pointer',
   },

@@ -1,108 +1,120 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const TeacherLoginPage = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [registrationNumber, setRegistrationNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
 
-    // Fake authentication logic - badilisha na API call kama unayo
-    if (email === 'teacher@example.com' && password === 'password') {
-      navigate('/teacher-dashboard');
-    } else {
-      alert('Invalid credentials!');
+    try {
+      const response = await axios.post('http://192.168.43.33:8080/api/users/login', {
+
+        registrationNumber,
+        password
+      });
+
+      if (response.data && response.data.role === 'TEACHER') {
+        localStorage.setItem('teacher', JSON.stringify(response.data));
+        navigate('/teacher-dashboard');
+
+      } else {
+        setError('Invalid credentials or not a teacher');
+      }
+    } catch (err) {
+      setError('Login failed. Please check your registration number and password.');
+    }
+  };
+
+  const styles = {
+    container: {
+      maxWidth: '400px',
+      margin: '80px auto',
+      padding: '30px',
+      backgroundColor: '#f9f9f9',
+      borderRadius: '12px',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif'
+    },
+    title: {
+      textAlign: 'center',
+      marginBottom: '25px',
+      color: '#333'
+    },
+    formGroup: {
+      marginBottom: '20px'
+    },
+    label: {
+      display: 'block',
+      fontWeight: 'bold',
+      marginBottom: '8px',
+      color: '#444'
+    },
+    input: {
+      width: '100%',
+      padding: '10px 12px',
+      fontSize: '15px',
+      border: '1px solid #ccc',
+      borderRadius: '8px',
+      transition: 'border 0.3s ease'
+    },
+    button: {
+      width: '100%',
+      padding: '12px',
+      backgroundColor: '#007bff',
+      border: 'none',
+      color: 'white',
+      fontSize: '16px',
+      borderRadius: '8px',
+      cursor: 'pointer',
+      transition: 'background-color 0.3s ease'
+    },
+    buttonHover: {
+      backgroundColor: '#0056b3'
+    },
+    error: {
+      color: 'red',
+      marginBottom: '15px',
+      textAlign: 'center'
     }
   };
 
   return (
     <div style={styles.container}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>Teacher Login</h2>
-        <form onSubmit={handleLogin}>
+      <h2 style={styles.title}>Teacher Login</h2>
+      {error && <div style={styles.error}>{error}</div>}
+      <form onSubmit={handleLogin}>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Registration Number</label>
           <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            value={registrationNumber}
+            onChange={(e) => setRegistrationNumber(e.target.value)}
             style={styles.input}
             required
           />
+        </div>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Password</label>
           <input
             type="password"
-            placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={styles.input}
             required
           />
-          <button type="submit" style={styles.button}>
-            Login
-          </button>
-        </form>
-        <p style={styles.registerText}>
-          Don't have an account?{' '}
-          <Link to="/teacher-register" style={styles.registerLink}>
-            Register here
-          </Link>
-        </p>
-      </div>
+        </div>
+        <button type="submit" style={styles.button}>
+          Login
+        </button>
+      </form>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    backgroundColor: '#f0f4f8',
-    height: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  card: {
-    backgroundColor: '#fff',
-    padding: 30,
-    borderRadius: 12,
-    boxShadow: '0 0 15px rgba(0,0,0,0.1)',
-    width: '100%',
-    maxWidth: 400,
-  },
-  title: {
-    textAlign: 'center',
-    marginBottom: 25,
-    color: '#333',
-  },
-  input: {
-    width: '100%',
-    padding: '12px 15px',
-    marginBottom: 15,
-    border: '1px solid #ccc',
-    borderRadius: 8,
-    fontSize: 16,
-  },
-  button: {
-    width: '100%',
-    padding: 12,
-    backgroundColor: '#007bff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: 8,
-    fontSize: 16,
-    cursor: 'pointer',
-  },
-  registerText: {
-    marginTop: 15,
-    textAlign: 'center',
-    fontSize: 14,
-    color: '#666',
-  },
-  registerLink: {
-    color: '#007bff',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-  },
 };
 
 export default TeacherLoginPage;

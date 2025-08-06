@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import AdminLoginPage from './components/AdminLoginPage';
 import AdminDashboard from './components/AdminDashboard';
 import DashboardHome from './components/DashboardHome';
-import Teachers from './components/Teachers';     
+import Teachers from './components/Teachers';
 import Lessons from './components/Lessons';
 import Assessments from './components/Assessments';
 import Results from './components/Results';
@@ -19,7 +19,7 @@ import MyExams from './Teacher/MyExams';
 import MyResults from './Teacher/MyResults';
 import MyStudents from './Teacher/MyStudents';
 import MyAssessments from './Teacher/MyAssessments';
-import TeacherLessonUpload from './Teacher/TeacherLessonUpload';
+import LessonUploadForm from './Teacher/LessonUploadForm';
 import TeacherLessonUploadImage from './Teacher/TeacherLessonUploadImage';
 import CreateAssessment from './Teacher/CreateAssessment';
 import AddQuestionForm from './Teacher/AddQuestionForm';
@@ -30,6 +30,10 @@ import EditLessonsList from './Teacher/EditLessonsList';
 import EditLessonPage from './Teacher/EditLessonPage';
 import { VideoUploadOnly } from './Teacher/TeacherDashboard';
 
+import AssessmentBuilder from './Teacher/AssessmentBuilder';
+import AllAssessments from './Teacher/AllAssessments';
+import EditAssessment from './Teacher/EditAssessment';
+import ViewAssessment from './Teacher/ViewAssessment';
 
 const App = () => {
   return (
@@ -45,13 +49,15 @@ const App = () => {
           <Route path="results" element={<Results />} />
         </Route>
 
-        {/* Teacher Routes */}
+        {/* Teacher Auth Routes */}
         <Route path="/teacher-login" element={<TeacherLoginPage />} />
         <Route path="/teacher-register" element={<TeacherRegisterPage />} />
+
+        {/* Teacher Dashboard Routes */}
         <Route path="/teacher-dashboard" element={<TeacherDashboard />}>
-          <Route index element={<Navigate to="/teacher-dashboard/lessons" replace />} />
+          <Route index element={<Navigate to="lessons" replace />} />
           <Route path="lessons" element={<MyLessons />} />
-          <Route path="upload-lesson" element={<TeacherLessonUpload />} />
+          <Route path="upload-lesson" element={<LessonUploadForm />} />
           <Route path="upload-lesson-image" element={<TeacherLessonUploadImage />} />
           <Route path="lesson-images" element={<LessonImageList />} />
           <Route path="lesson-videos" element={<LessonVideoList />} />
@@ -63,9 +69,12 @@ const App = () => {
           <Route path="assessment/:assessmentId" element={<TeacherAssessmentDetail />} />
           <Route path="add-question" element={<AddQuestionForm />} />
           <Route path="edit-lessons" element={<EditLessonsList />} />
-          <Route path="edit-lesson/:id" element={<EditLessonPage />} /> 
+          <Route path="edit-lesson/:id" element={<EditLessonPage />} />
           <Route path="upload-video" element={<VideoUploadOnly />} />
-
+          <Route path="edit-assessment/:id" element={<EditAssessment />} />
+          <Route path="view-assessment/:id" element={<ViewAssessment />} />
+          <Route path="assessment-builder" element={<AssessmentBuilder />} />
+          <Route path="all-assessments" element={<AllAssessments />} />
         </Route>
 
         {/* Catch-all */}

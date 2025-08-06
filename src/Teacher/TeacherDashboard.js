@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+import AssessmentBuilder from './AssessmentBuilder'; // ✅ path sahihi
+import AllAssessments from './AllAssessments'; // ✅ ume-import pia hapa
 
 // VideoUploadOnly component (exported separately)
 export const VideoUploadOnly = () => {
@@ -19,6 +21,7 @@ export const VideoUploadOnly = () => {
       setMessage('Tafadhali jaza sehemu zote za fomu.');
       return;
     }
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
@@ -30,6 +33,7 @@ export const VideoUploadOnly = () => {
         method: 'POST',
         body: formData,
       });
+
       if (res.ok) {
         setMessage('Video imepakiwa kwa mafanikio!');
         setTitle('');
@@ -106,9 +110,11 @@ const TeacherDashboard = () => {
           <li><NavLink to="results" style={navStyle}>📊 Results</NavLink></li>
           <li><NavLink to="students" style={navStyle}>👥 My Students</NavLink></li>
           <li><NavLink to="assessments" style={navStyle}>📂 Assessments</NavLink></li>
+          <li><NavLink to="all-assessments" style={navStyle}>📋 All Assessments</NavLink></li> {/* Hii ndio umeongeza */}
           <li><NavLink to="create-assessment" style={navStyle}>➕ Create Assessment</NavLink></li>
           <li><NavLink to="add-question" style={navStyle}>➕ Add Question</NavLink></li>
           <li><NavLink to="edit-lessons" style={navStyle}>✏️ Edit Lessons List</NavLink></li>
+          <li><NavLink to="assessment-builder" style={navStyle}>🛠️ Assessment Builder</NavLink></li>
         </ul>
       </div>
       <div style={styles.content}>
