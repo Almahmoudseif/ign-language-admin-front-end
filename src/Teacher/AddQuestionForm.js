@@ -23,7 +23,7 @@ const AddQuestionForm = ({ assessmentId, onQuestionAdded }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Trim inputs
+    // Validate inputs
     if (
       !questionText.trim() ||
       !optionA.trim() ||
@@ -48,15 +48,15 @@ const AddQuestionForm = ({ assessmentId, onQuestionAdded }) => {
 
     try {
       await axios.post('http://192.168.43.33:8080/api/questions', {
-        assessment: { id: assessmentId }, // send as object for backend compatibility
+        assessmentId: assessmentId, // tumia assessmentId moja kwa moja
         content: questionText.trim(),
         imageUrl: null,
         videoUrl: null,
         answers: [
-          { content: optionA.trim(), isCorrect: correctOptionUpper === 'A' },
-          { content: optionB.trim(), isCorrect: correctOptionUpper === 'B' },
-          { content: optionC.trim(), isCorrect: correctOptionUpper === 'C' },
-          { content: optionD.trim(), isCorrect: correctOptionUpper === 'D' },
+          { content: optionA.trim(), correct: correctOptionUpper === 'A' },
+          { content: optionB.trim(), correct: correctOptionUpper === 'B' },
+          { content: optionC.trim(), correct: correctOptionUpper === 'C' },
+          { content: optionD.trim(), correct: correctOptionUpper === 'D' },
         ],
       });
 

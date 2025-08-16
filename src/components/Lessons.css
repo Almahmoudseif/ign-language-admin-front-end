@@ -1,18 +1,103 @@
-.lessons-container {
+/* Lessons page container */
+.lessons-page {
   padding: 20px;
-  background-color: #f0f4f8;
-  min-height: 100vh;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
 }
 
-.lessons-heading {
+/* Page title */
+.lessons-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #2c3e50;
   text-align: center;
-  margin-bottom: 30px;
-  color: #333;
-  font-size: 24px;
 }
 
-.lessons-content {
+/* Grid layout */
+.lessons-grid {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+}
+
+/* Lesson list full width */
+.lessons-list.full-width {
+  width: 100%;
+}
+
+/* Lessons table */
+.lessons-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.lessons-table th,
+.lessons-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.lessons-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+/* Buttons styling */
+.lessons-table button {
+  padding: 6px 12px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+/* Specific button colors */
+.lessons-table button:nth-child(1) {
+  background-color: #3498db; /* Hariri / Edit */
+}
+
+.lessons-table button:nth-child(2) {
+  background-color: #e74c3c; /* Futa / Delete */
+}
+
+.lessons-table button:nth-child(1):hover {
+  background-color: #2980b9;
+}
+
+.lessons-table button:nth-child(2):hover {
+  background-color: #c0392b;
+}
+
+/* Save and Cancel buttons when editing */
+.lessons-table td button:nth-child(1) {
+  background-color: #2ecc71; /* Hifadhi / Save */
+}
+
+.lessons-table td button:nth-child(2) {
+  background-color: #95a5a6; /* Ghairi / Cancel */
+}
+
+.lessons-table td button:nth-child(1):hover {
+  background-color: #27ae60;
+}
+
+.lessons-table td button:nth-child(2):hover {
+  background-color: #7f8c8d;
+}
+
+/* Input and textarea for editing */
+.lessons-table input[type="text"],
+.lessons-table textarea {
+  width: 100%;
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }

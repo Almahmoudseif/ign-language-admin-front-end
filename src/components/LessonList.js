@@ -1,68 +1,184 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import './LessonList.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "./Lessons.css";
 
-const LessonList = () => {
+const LessonList = ({ refresh }) => {
   const [lessons, setLessons] = useState([]);
-  const [filterLevel, setFilterLevel] = useState('ALL');
-  const [loading, setLoading] = useState(false);
+  const [editingLesson, setEditingLesson] = useState(null);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    lessonType: "",
+    imageFile: null,
+    videoFile: null,
+  });
+  const [levelFilter, setLevelFilter] = useState("ALL");
 
-  const fetchLessons = () => {
-    setLoading(true);
-    const url =
-      filterLevel === 'ALL'
-        ? 'http://localhost:8080/api/lessons'
-        : `http://localhost:8080/api/lessons/level/${filterLevel}`;
-
-    axios.get(url)
-      .then(res => setLessons(res.data))
-      .catch(err => console.error(err))
-      .finally(() => setLoading(false));
+  const fetchLessons = async () => {
+    try {
+      const res = await axios.get("http://192.168.43.33:8080/api/lessons");
+      setLessons(res.data);
+    } catch (err) {
+      console.error("Failed to fetch lessons", err);
+    }
   };
 
   useEffect(() => {
     fetchLessons();
-  }, [filterLevel]);
+  }, [refresh]);
 
-  const handleDelete = (id) => {
-    axios.delete(`http://localhost:8080/api/lessons/${id}`)
-      .then(() => fetchLessons())
-      .catch(err => console.error(err));
+  const handleDelete = async (id) => {
+    if (window.confirm("Una uhakika unataka kufuta somo hili?")) {
+      try {
+        await axios.delete(`http://192.168.43.33:8080/api/lessons/${id}`);
+        fetchLessons();
+      } catch (err) {
+        console.error("Delete failed", err);
+      }
+    }
   };
 
-  return (
-    <div className="lesson-list-container">
-      <div className="lesson-list-header">
-        <h3>Orodha ya Mafunzo</h3>
+  const startEdit = (lesson) => {
+    setEditingLesson(lesson.id);
+    setFormData({
+      title: lesson.title,
+      description: lesson.description,
+      lessonType: lesson.lessonType || "",
+      imageFile: null,
+      videoFile: null,
+    });
+  };
 
-        <div className="filter-section">
-          <label>Chuja kwa Level: </label>
-          <select value={filterLevel} onChange={e => setFilterLevel(e.target.value)}>
-            <option value="ALL">Zote</option>
-            <option value="BEGINNER">Beginner</option>
-            <option value="INTERMEDIATE">Intermediate</option>
-            <option value="ADVANCED">Advanced</option>
-          </select>
-        </div>
+  const handleUpdate = async (id) => {
+    try {
+      const updateData = new FormData();
+      updateData.append("title", formData.title);
+      updateData.append("description", formData.description);
+      updateData.append("lessonType", formData.lessonType);
+
+      if (formData.imageFile) updateData.append("image", formData.imageFile);
+      if (formData.videoFile) updateData.append("video", formData.videoFile);
+
+      await axios.put(`http://192.168.43.33:8080/api/lessons/${id}`, updateData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      setEditingLesson(null);
+      fetchLessons();
+    } catch (err) {
+      console.error("Update failed", err);
+    }
+  };
+
+  const filteredLessons =
+    levelFilter === "ALL"
+      ? lessons
+      : lessons.filter((l) => l.level === levelFilter);
+
+  return (
+    <div>
+      <div style={{ marginBottom: "15px" }}>
+        <label>Chuja level: </label>
+        <select
+          value={levelFilter}
+          onChange={(e) => setLevelFilter(e.target.value)}
+        >
+          <option value="ALL">ALL</option>
+          <option value="BEGINNER">BEGINNER</option>
+          <option value="INTERMEDIATE">INTERMEDIATE</option>
+          <option value="ADVANCED">ADVANCED</option>
+        </select>
       </div>
 
-      {loading ? (
-        <p>Inapakia...</p>
-      ) : lessons.length === 0 ? (
-        <p>Hakuna mafunzo yaliyopatikana.</p>
+      {filteredLessons.length === 0 ? (
+        <p>Hakuna mafunzo yaliyopatikana kwa level hii.</p>
       ) : (
-        <ul className="lesson-list">
-          {lessons.map(lesson => (
-            <li key={lesson.id} className="lesson-item">
-              <div className="lesson-title">{lesson.title}</div>
-              <div className="lesson-description">{lesson.description}</div>
-              <div className="lesson-level">Level: {lesson.level}</div>
-              <button className="delete-button" onClick={() => handleDelete(lesson.id)}>
-                Futa
-              </button>
-            </li>
-          ))}
-        </ul>
+        <table className="lessons-table">
+          <thead>
+            <tr>
+              <th>Jina la Somo</th>
+              <th>Maelezo</th>
+              <th>Media</th>
+              <th>Vitendo</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredLessons.map((lesson) => (
+              <tr key={lesson.id}>
+                <td>
+                  {editingLesson === lesson.id ? (
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) =>
+                        setFormData({ ...formData, title: e.target.value })
+                      }
+                    />
+                  ) : (
+                    lesson.title
+                  )}
+                </td>
+                <td>
+                  {editingLesson === lesson.id ? (
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) =>
+                        setFormData({ ...formData, description: e.target.value })
+                      }
+                    />
+                  ) : (
+                    lesson.description
+                  )}
+                </td>
+                <td>
+                  {editingLesson === lesson.id ? (
+                    <>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) =>
+                          setFormData({ ...formData, imageFile: e.target.files[0] })
+                        }
+                      />
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={(e) =>
+                          setFormData({ ...formData, videoFile: e.target.files[0] })
+                        }
+                      />
+                    </>
+                  ) : lesson.imageUrl ? (
+                    <img
+                      src={lesson.imageUrl}
+                      alt={lesson.title}
+                      style={{ width: "120px" }}
+                    />
+                  ) : lesson.videoUrl ? (
+                    <video width="200" controls>
+                      <source src={lesson.videoUrl} type="video/mp4" />
+                    </video>
+                  ) : (
+                    "Hakuna media"
+                  )}
+                </td>
+                <td>
+                  {editingLesson === lesson.id ? (
+                    <>
+                      <button onClick={() => handleUpdate(lesson.id)}>💾 Hifadhi</button>
+                      <button onClick={() => setEditingLesson(null)}>❌ Ghairi</button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => startEdit(lesson)}>✏ Hariri</button>
+                      <button onClick={() => handleDelete(lesson.id)}>🗑 Futa</button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );

@@ -1,28 +1,26 @@
-/* src/components/AdminLoginPage.css */
-
 .login-container {
-  height: 100vh;
-  background: linear-gradient(135deg, #1976d2, #42a5f5);
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  background-color: #f1f8e9;
+  padding: 20px;
 }
 
 .login-form {
   background-color: #ffffff;
-  padding: 40px 30px;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   width: 100%;
   max-width: 400px;
 }
 
 .form-title {
   text-align: center;
-  margin-bottom: 30px;
-  color: #1976d2;
-  font-size: 26px;
+  color: #2e7d32;
+  margin-bottom: 25px;
+  font-size: 24px;
   font-weight: bold;
 }
 
@@ -33,60 +31,56 @@
 .input-group label {
   display: block;
   margin-bottom: 6px;
+  font-weight: 600;
   color: #333;
-  font-size: 15px;
 }
 
 .input-group input {
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-  outline: none;
-  transition: border 0.3s;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #c8e6c9;
+  font-size: 14px;
 }
 
-.input-group input:focus {
-  border-color: #1976d2;
-}
-
-.password-group .password-wrapper {
-  position: relative;
+.password-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #c8e6c9;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 .password-wrapper input {
-  padding-right: 45px; /* nafasi kwa icon */
+  border: none;
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
 }
 
 .toggle-visibility {
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  transform: translateY(-50%);
+  padding: 0 10px;
   cursor: pointer;
-  font-size: 22px;
-  color: #666;
-  user-select: none;
-  transition: color 0.3s;
-}
-
-.toggle-visibility:hover {
-  color: #1976d2;
+  color: #388e3c;
 }
 
 .login-button {
   width: 100%;
-  background-color: #1976d2;
+  padding: 12px;
+  background-color: #388e3c;
   color: white;
-  padding: 14px;
-  font-size: 16px;
+  font-weight: bold;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: 0.3s;
 }
 
 .login-button:hover {
-  background-color: #125ea2;
+  background-color: #2e7d32;
+}
+
+.login-button:disabled {
+  background-color: #a5d6a7;
+  cursor: not-allowed;
 }

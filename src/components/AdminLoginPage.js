@@ -1,23 +1,44 @@
-// src/components/AdminLoginPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import axios from 'axios';
 import './AdminLoginPage.css';
 
 const AdminLoginPage = () => {
-  const [username, setUsername] = useState('');
+  const [registrationNumber, setRegistrationNumber] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    // Placeholder: Angalia kama credentials zipo sawa
-    if (username.trim() === 'admin' && password.trim() === 'admin123') {
-      navigate('/admin-dashboard');
-    } else {
-      alert('Jina la mtumiaji au nenosiri si sahihi');
+    try {
+      const response = await axios.post('http://localhost:8080/api/admin/login', {
+        registrationNumber,
+        password,
+      });
+
+      // Login imeshafanikiwa
+      const adminData = response.data;
+      console.log('Admin logged in:', adminData);
+
+      // Hifadhi data au token kama utatumia JWT baadaye
+      // localStorage.setItem('admin', JSON.stringify(adminData));
+
+      navigate('/admin-dashboard'); // Navigates kwenye dashboard
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        alert(error.response.data); // Onyesha message kutoka backend
+      } else {
+        alert('Kuna tatizo la kuunganisha na server. Jaribu tena.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -27,12 +48,12 @@ const AdminLoginPage = () => {
         <h2 className="form-title">Karibu Admin</h2>
 
         <div className="input-group">
-          <label>Jina la Mtumiaji</label>
+          <label>Registration Number</label>
           <input
             type="text"
-            placeholder="Ingiza jina lako"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Ingiza registration number"
+            value={registrationNumber}
+            onChange={(e) => setRegistrationNumber(e.target.value)}
             required
           />
         </div>
@@ -42,7 +63,7 @@ const AdminLoginPage = () => {
           <div className="password-wrapper">
             <input
               type={showPassword ? 'text' : 'password'}
-              placeholder="Ingiza nenosiri lako"
+              placeholder="Ingiza nenosiri"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -57,8 +78,8 @@ const AdminLoginPage = () => {
           </div>
         </div>
 
-        <button className="login-button" type="submit">
-          Ingia
+        <button className="login-button" type="submit" disabled={loading}>
+          {loading ? 'Iningia...' : 'Ingia'}
         </button>
       </form>
     </div>

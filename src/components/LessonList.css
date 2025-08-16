@@ -1,98 +1,103 @@
-.lesson-list-container {
-  background-color: #fff;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
-  margin: 20px auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* Lessons page container */
+.lessons-page {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
 }
 
-.lesson-list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Page title */
+.lessons-title {
+  font-size: 28px;
+  font-weight: bold;
   margin-bottom: 20px;
-  flex-wrap: wrap;
+  color: #2c3e50;
+  text-align: center;
 }
 
-.lesson-list-header h3 {
-  margin: 0;
-  color: #007bff;
-  font-weight: 700;
-  font-size: 1.5rem;
-}
-
-.filter-section {
+/* Grid layout */
+.lessons-grid {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 1rem;
-  color: #333;
+  flex-direction: column;
 }
 
-.filter-section select {
-  padding: 6px 10px;
-  border-radius: 6px;
+/* Lesson list full width */
+.lessons-list.full-width {
+  width: 100%;
+}
+
+/* Lessons table */
+.lessons-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.lessons-table th,
+.lessons-table td {
   border: 1px solid #ccc;
-  font-size: 1rem;
-  cursor: pointer;
-  background-color: #fff;
+  padding: 10px;
+  text-align: left;
 }
 
-.lesson-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.lessons-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
 }
 
-.lesson-item {
-  background-color: #f9f9f9;
-  border-left: 5px solid #007bff;
-  padding: 15px 20px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  position: relative;
-  transition: box-shadow 0.2s ease-in-out;
-}
-
-.lesson-item:hover {
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-}
-
-.lesson-title {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: #222;
-  margin-bottom: 8px;
-}
-
-.lesson-description {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 10px;
-}
-
-.lesson-level {
-  font-style: italic;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.delete-button {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  background-color: #dc3545;
-  color: #fff;
+/* Buttons styling */
+.lessons-table button {
+  padding: 6px 12px;
+  margin-right: 5px;
   border: none;
-  padding: 7px 14px;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.2s ease-in-out;
+  color: white;
+  font-size: 14px;
+  transition: background 0.3s;
 }
 
-.delete-button:hover {
-  background-color: #c82333;
+/* Specific button colors */
+.lessons-table button:nth-child(1) {
+  background-color: #3498db; /* Hariri / Edit */
+}
+
+.lessons-table button:nth-child(2) {
+  background-color: #e74c3c; /* Futa / Delete */
+}
+
+.lessons-table button:nth-child(1):hover {
+  background-color: #2980b9;
+}
+
+.lessons-table button:nth-child(2):hover {
+  background-color: #c0392b;
+}
+
+/* Save and Cancel buttons when editing */
+.lessons-table td button:nth-child(1) {
+  background-color: #2ecc71; /* Hifadhi / Save */
+}
+
+.lessons-table td button:nth-child(2) {
+  background-color: #95a5a6; /* Ghairi / Cancel */
+}
+
+.lessons-table td button:nth-child(1):hover {
+  background-color: #27ae60;
+}
+
+.lessons-table td button:nth-child(2):hover {
+  background-color: #7f8c8d;
+}
+
+/* Input and textarea for editing */
+.lessons-table input[type="text"],
+.lessons-table textarea {
+  width: 100%;
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }

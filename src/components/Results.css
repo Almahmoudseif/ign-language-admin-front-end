@@ -1,21 +1,53 @@
-/* src/components/Results.css */
-
-.page-container {
+.results-container {
+  margin: 20px auto;
   padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
   max-width: 900px;
-  margin: 0 auto;
-  font-family: Arial, sans-serif;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.page-container h2 {
-  color: #1976d2;
-  margin-bottom: 15px;
+.results-title {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 22px;
 }
 
-.page-container p {
-  color: #555;
+.loading {
+  text-align: center;
+  font-size: 18px;
+  color: #3498db;
+}
+
+.no-data {
+  text-align: center;
   font-size: 16px;
+  color: #7f8c8d;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.results-table th,
+.results-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+}
+
+.results-table th {
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+}
+
+.results-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.results-table tr:hover {
+  background-color: #f1f1f1;
 }

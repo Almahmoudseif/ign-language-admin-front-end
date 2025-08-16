@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
-import AddLessonForm from './AddLessonForm';
 import LessonList from './LessonList';
-import './Lessons.css'; // <-- CSS import
+import './Lessons.css';
 
 const Lessons = () => {
-  const [refresh, setRefresh] = useState(false);
-
-  const handleLessonAdded = () => {
-    setRefresh(prev => !prev); // re-render LessonList
-  };
+  const [refreshTrigger] = useState(0); // haina tena handleLessonAdded kwa sababu hatuongezi lessons hapa
 
   return (
-    <div className="lessons-container">
-      <h2 className="lessons-heading">Usimamizi wa Mafunzo</h2>
-      <div className="lessons-content">
-        <AddLessonForm onLessonAdded={handleLessonAdded} />
-        <LessonList key={refresh} />
+    <div className="lessons-page">
+      <h2 className="lessons-title">📚 Orodha ya Mafunzo</h2>
+
+      <div className="lessons-grid">
+        <div className="lessons-list full-width">
+          <LessonList refresh={refreshTrigger} />
+        </div>
       </div>
     </div>
   );

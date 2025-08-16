@@ -7,7 +7,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Hapa unaweza pia ku-clear tokens/session kama umeweka authentication halisi
+    localStorage.removeItem('admin'); // clear login info
     navigate('/');
   };
 
@@ -52,7 +52,7 @@ const AdminDashboard = () => {
       </aside>
 
       <main className="main-content">
-        <Outlet /> {/* Hapa ndio pages zote zitapakia */}
+        <Outlet />
       </main>
     </div>
   );
