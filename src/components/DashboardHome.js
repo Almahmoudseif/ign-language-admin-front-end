@@ -1,21 +1,15 @@
-// src/components/DashboardHome.js
 import React, { useEffect, useState } from 'react';
 import './DashboardHome.css';
-import {
-  FaChalkboardTeacher,
-  FaBook,
-  FaClipboardList,
-  FaChartBar,
-} from 'react-icons/fa';
+import { FaChalkboardTeacher, FaBook, FaClipboardList, FaChartBar } from 'react-icons/fa';
 
 const DashboardHome = () => {
   const [teacherCount, setTeacherCount] = useState(0);
 
   useEffect(() => {
     fetch("http://localhost:8080/api/teachers/count")
-      .then((res) => res.json())
-      .then((data) => setTeacherCount(data))
-      .catch((err) => console.error("Teacher count fetch failed:", err));
+      .then(res => res.json())
+      .then(data => setTeacherCount(typeof data === 'number' ? data : 0))
+      .catch(err => console.error("Teacher count fetch failed:", err));
   }, []);
 
   return (

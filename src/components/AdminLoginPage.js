@@ -17,26 +17,35 @@ const AdminLoginPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8080/api/admin/login', {
-        registrationNumber,
-        password,
-      });
+      const response = await axios.post(
+        'http://192.168.43.33:8080/api/admin/login',
+        { registrationNumber, password }
+      );
 
-      // Login imeshafanikiwa
       const adminData = response.data;
       console.log('Admin logged in:', adminData);
 
-      // Hifadhi data au token kama utatumia JWT baadaye
-      // localStorage.setItem('admin', JSON.stringify(adminData));
+      // Hifadhi data kwenye localStorage
+      localStorage.setItem("token", "admin-logged-in"); // token feki, unaweza baadaye kutumia JWT
+      localStorage.setItem("role", adminData.role);
+      localStorage.setItem("registrationNumber", adminData.registrationNumber);
 
-      navigate('/admin-dashboard'); // Navigates kwenye dashboard
+      navigate('/admin-dashboard');
     } catch (error) {
       console.error(error);
-      if (error.response) {
-        alert(error.response.data); // Onyesha message kutoka backend
-      } else {
-        alert('Kuna tatizo la kuunganisha na server. Jaribu tena.');
+
+      // Hapa tunahakikisha tunabadilisha object kuwa string
+      let errorMessage = 'Kuna tatizo la kuunganisha na server. Jaribu tena.';
+      if (error.response && error.response.data) {
+        if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data;
+        } else if (error.response.data.message) {
+          errorMessage = error.response.data.message;
+        } else {
+          errorMessage = JSON.stringify(error.response.data);
+        }
       }
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }

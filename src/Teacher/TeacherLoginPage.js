@@ -13,21 +13,28 @@ const TeacherLoginPage = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://192.168.43.33:8080/api/users/login', {
-
+      const response = await axios.post('http://192.168.43.33:8080/api/auth/login', {
         registrationNumber,
         password
       });
 
-      if (response.data && response.data.role === 'TEACHER') {
+      console.log('Login response:', response.data);
+
+      if (response.data && response.data.role?.toLowerCase() === 'teacher') {
         localStorage.setItem('teacher', JSON.stringify(response.data));
         navigate('/teacher-dashboard');
-
       } else {
         setError('Invalid credentials or not a teacher');
       }
     } catch (err) {
-      setError('Login failed. Please check your registration number and password.');
+      console.error('Login error:', err.response || err);
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (typeof err.response?.data === 'string') {
+        setError(err.response.data);
+      } else {
+        setError('Login failed. Please check your registration number and password.');
+      }
     }
   };
 
@@ -38,50 +45,15 @@ const TeacherLoginPage = () => {
       padding: '30px',
       backgroundColor: '#f9f9f9',
       borderRadius: '12px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
       fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif'
     },
-    title: {
-      textAlign: 'center',
-      marginBottom: '25px',
-      color: '#333'
-    },
-    formGroup: {
-      marginBottom: '20px'
-    },
-    label: {
-      display: 'block',
-      fontWeight: 'bold',
-      marginBottom: '8px',
-      color: '#444'
-    },
-    input: {
-      width: '100%',
-      padding: '10px 12px',
-      fontSize: '15px',
-      border: '1px solid #ccc',
-      borderRadius: '8px',
-      transition: 'border 0.3s ease'
-    },
-    button: {
-      width: '100%',
-      padding: '12px',
-      backgroundColor: '#007bff',
-      border: 'none',
-      color: 'white',
-      fontSize: '16px',
-      borderRadius: '8px',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s ease'
-    },
-    buttonHover: {
-      backgroundColor: '#0056b3'
-    },
-    error: {
-      color: 'red',
-      marginBottom: '15px',
-      textAlign: 'center'
-    }
+    title: { textAlign: 'center', marginBottom: '25px', color: '#333' },
+    formGroup: { marginBottom: '20px' },
+    label: { display: 'block', fontWeight: 'bold', marginBottom: '8px', color: '#444' },
+    input: { width: '100%', padding: '10px 12px', fontSize: '15px', border: '1px solid #ccc', borderRadius: '8px', transition: 'border 0.3s ease' },
+    button: { width: '100%', padding: '12px', backgroundColor: '#007bff', border: 'none', color: 'white', fontSize: '16px', borderRadius: '8px', cursor: 'pointer', transition: 'background-color 0.3s ease' },
+    error: { color: 'red', marginBottom: '15px', textAlign: 'center' }
   };
 
   return (
@@ -109,9 +81,7 @@ const TeacherLoginPage = () => {
             required
           />
         </div>
-        <button type="submit" style={styles.button}>
-          Login
-        </button>
+        <button type="submit" style={styles.button}>Login</button>
       </form>
     </div>
   );

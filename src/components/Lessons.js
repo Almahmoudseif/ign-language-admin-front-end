@@ -1,19 +1,191 @@
-import React, { useState } from 'react';
-import LessonList from './LessonList';
-import './Lessons.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "./Lessons.css";
 
 const Lessons = () => {
-  const [refreshTrigger] = useState(0); // haina tena handleLessonAdded kwa sababu hatuongezi lessons hapa
+  const [lessons, setLessons] = useState([]);
+  const [editingLesson, setEditingLesson] = useState(null);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    lessonType: "",
+    imageFile: null,
+    videoFile: null,
+  });
+  const [levelFilter, setLevelFilter] = useState("ALL");
+  const [loading, setLoading] = useState(true);
+
+  const fetchLessons = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/api/lessons");
+      setLessons(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error("Failed to fetch lessons", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLessons();
+  }, []);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Una uhakika unataka kufuta somo hili?")) return;
+    try {
+      await axios.delete(`http://localhost:8080/api/lessons/${id}`);
+      fetchLessons();
+    } catch (err) {
+      console.error("Delete failed", err);
+      alert("Tatizo kufuta somo.");
+    }
+  };
+
+  const startEdit = (lesson) => {
+    setEditingLesson(lesson.id);
+    setFormData({
+      title: lesson.title || "",
+      description: lesson.description || "",
+      lessonType: lesson.lessonType || "",
+      imageFile: null,
+      videoFile: null,
+    });
+  };
+
+  const handleUpdate = async (id) => {
+    try {
+      const updateData = new FormData();
+      updateData.append("title", formData.title);
+      updateData.append("description", formData.description);
+      updateData.append("lessonType", formData.lessonType);
+
+      if (formData.imageFile) updateData.append("image", formData.imageFile);
+      if (formData.videoFile) updateData.append("video", formData.videoFile);
+
+      await axios.put(`http://localhost:8080/api/lessons/${id}`, updateData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      setEditingLesson(null);
+      fetchLessons();
+    } catch (err) {
+      console.error("Update failed", err);
+      alert("Tatizo ku-update somo.");
+    }
+  };
+
+  const filteredLessons =
+    levelFilter === "ALL"
+      ? lessons
+      : lessons.filter((l) => l.level === levelFilter);
+
+  if (loading) return <p>Inapakia mafunzo...</p>;
 
   return (
-    <div className="lessons-page">
-      <h2 className="lessons-title">📚 Orodha ya Mafunzo</h2>
-
-      <div className="lessons-grid">
-        <div className="lessons-list full-width">
-          <LessonList refresh={refreshTrigger} />
-        </div>
+    <div className="lessons-container">
+      <div className="filter">
+        <label>Chuja level: </label>
+        <select
+          value={levelFilter}
+          onChange={(e) => setLevelFilter(e.target.value)}
+        >
+          <option value="ALL">ALL</option>
+          <option value="BEGINNER">BEGINNER</option>
+          <option value="INTERMEDIATE">INTERMEDIATE</option>
+          <option value="ADVANCED">ADVANCED</option>
+        </select>
       </div>
+
+      {filteredLessons.length === 0 ? (
+        <p>Hakuna mafunzo yaliyopatikana kwa level hii.</p>
+      ) : (
+        <table className="lessons-table">
+          <thead>
+            <tr>
+              <th>Jina la Somo</th>
+              <th>Maelezo</th>
+              <th>Media</th>
+              <th>Vitendo</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredLessons.map((lesson) => (
+              <tr key={lesson.id}>
+                <td>
+                  {editingLesson === lesson.id ? (
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) =>
+                        setFormData({ ...formData, title: e.target.value })
+                      }
+                    />
+                  ) : (
+                    lesson.title
+                  )}
+                </td>
+                <td>
+                  {editingLesson === lesson.id ? (
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) =>
+                        setFormData({ ...formData, description: e.target.value })
+                      }
+                    />
+                  ) : (
+                    lesson.description
+                  )}
+                </td>
+                <td>
+                  {editingLesson === lesson.id ? (
+                    <>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) =>
+                          setFormData({ ...formData, imageFile: e.target.files[0] })
+                        }
+                      />
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={(e) =>
+                          setFormData({ ...formData, videoFile: e.target.files[0] })
+                        }
+                      />
+                    </>
+                  ) : lesson.imageUrl ? (
+                    <img
+                      src={lesson.imageUrl}
+                      alt={lesson.title}
+                      style={{ width: "120px" }}
+                    />
+                  ) : lesson.videoUrl ? (
+                    <video width="200" controls>
+                      <source src={lesson.videoUrl} type="video/mp4" />
+                    </video>
+                  ) : (
+                    "Hakuna media"
+                  )}
+                </td>
+                <td>
+                  {editingLesson === lesson.id ? (
+                    <>
+                      <button onClick={() => handleUpdate(lesson.id)}>💾 Hifadhi</button>
+                      <button onClick={() => setEditingLesson(null)}>❌ Ghairi</button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => startEdit(lesson)}>✏ Hariri</button>
+                      <button onClick={() => handleDelete(lesson.id)}>🗑 Futa</button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

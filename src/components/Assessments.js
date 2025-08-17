@@ -1,7 +1,6 @@
-// src/components/Assessments.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './Assessments.css'; // stylesheet yetu
+import './Assessments.css';
 
 const Assessments = () => {
   const [assessments, setAssessments] = useState([]);
@@ -12,7 +11,7 @@ const Assessments = () => {
     const fetchAssessments = async () => {
       try {
         const response = await axios.get('http://localhost:8080/api/assessments');
-        setAssessments(response.data);
+        setAssessments(Array.isArray(response.data) ? response.data : []);
       } catch (err) {
         console.error('Error fetching assessments:', err);
         setError('Tatizo kupokea data ya mitihani');
@@ -23,13 +22,8 @@ const Assessments = () => {
     fetchAssessments();
   }, []);
 
-  if (loading) {
-    return <div className="loader">Inapakia mitihani...</div>;
-  }
-
-  if (error) {
-    return <div className="error">{error}</div>;
-  }
+  if (loading) return <div className="loader">Inapakia mitihani...</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="assessments-container">
@@ -48,12 +42,12 @@ const Assessments = () => {
               </tr>
             </thead>
             <tbody>
-              {assessments.map((assessment) => (
-                <tr key={assessment.id}>
-                  <td>{assessment.title}</td>
-                  <td>{assessment.lessonTitle}</td>
-                  <td>{assessment.level}</td>
-                  <td>{assessment.teacherName}</td>
+              {assessments.map(a => (
+                <tr key={a.id}>
+                  <td>{a.title || 'Unknown'}</td>
+                  <td>{a.lessonTitle || 'Unknown'}</td>
+                  <td>{a.level || 'Unknown'}</td>
+                  <td>{a.teacherName || 'Unknown'}</td>
                 </tr>
               ))}
             </tbody>

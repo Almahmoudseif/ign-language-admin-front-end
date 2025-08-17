@@ -1,69 +1,68 @@
 /* Results.css */
 
+/* Container ya matokeo */
 .results-container {
-  width: 95%;
-  max-width: 1200px;
-  margin: 30px auto;
   padding: 20px;
-  background-color: #fefefe;
+  background-color: #f7f9fc;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  font-family: Arial, sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Title ya matokeo */
 .results-title {
-  text-align: center;
+  font-size: 1.8rem;
   margin-bottom: 20px;
   color: #333;
-  font-size: 1.8rem;
 }
 
-.loading, .no-data {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #666;
-}
-
+/* Table ya matokeo */
 .results-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .results-table th,
 .results-table td {
   padding: 12px 15px;
-  border: 1px solid #ddd;
-  text-align: center;
-  font-size: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .results-table th {
-  background-color: #4CAF50;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.results-table tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: #4a90e2;
+  color: #fff;
+  font-weight: 600;
 }
 
 .results-table tr:hover {
-  background-color: #f1f1f1;
+  background-color: #f1f6fb;
 }
 
+/* Buttons za action */
 .delete-btn {
-  padding: 6px 12px;
   background-color: #e74c3c;
   color: white;
+  padding: 6px 12px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
 
 .delete-btn:hover {
   background-color: #c0392b;
+}
+
+/* No data na loading message */
+.no-data,
+.loading {
+  text-align: center;
+  color: #666;
+  font-size: 1rem;
+  margin-top: 20px;
 }

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -8,7 +9,7 @@ import DashboardHome from './components/DashboardHome';
 import Teachers from './components/Teachers';
 import Lessons from './components/Lessons';
 import Assessments from './components/Assessments';
-import Results from './components/Results';
+import AdminResults from './components/AdminResults';
 
 // Teacher Components
 import TeacherLoginPage from './Teacher/TeacherLoginPage';
@@ -29,11 +30,13 @@ import TeacherAssessmentDetail from './Teacher/TeacherAssessmentDetail';
 import EditLessonsList from './Teacher/EditLessonsList';
 import EditLessonPage from './Teacher/EditLessonPage';
 import { VideoUploadOnly } from './Teacher/TeacherDashboard';
-
 import AssessmentBuilder from './Teacher/AssessmentBuilder';
 import AllAssessments from './Teacher/AllAssessments';
 import EditAssessment from './Teacher/EditAssessment';
 import ViewAssessment from './Teacher/ViewAssessment';
+
+// Protected Routes
+import { ProtectedRouteTeacher, ProtectedRouteAdmin } from './utils/ProtectedRoutes';
 
 const App = () => {
   return (
@@ -41,12 +44,16 @@ const App = () => {
       <Routes>
         {/* Admin Routes */}
         <Route path="/" element={<AdminLoginPage />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />}>
+        <Route path="/admin-dashboard" element={
+          <ProtectedRouteAdmin>
+            <AdminDashboard />
+          </ProtectedRouteAdmin>
+        }>
           <Route index element={<DashboardHome />} />
           <Route path="teachers" element={<Teachers />} />
           <Route path="lessons" element={<Lessons />} />
           <Route path="assessments" element={<Assessments />} />
-          <Route path="results" element={<Results />} />
+          <Route path="results" element={<AdminResults />} />
         </Route>
 
         {/* Teacher Auth Routes */}
@@ -54,28 +61,11 @@ const App = () => {
         <Route path="/teacher-register" element={<TeacherRegisterPage />} />
 
         {/* Teacher Dashboard Routes */}
-        <Route path="/teacher-dashboard" element={<TeacherDashboard />}>
-          <Route index element={<Navigate to="lessons" replace />} />
-          <Route path="lessons" element={<MyLessons />} />
-          <Route path="upload-lesson" element={<LessonUploadForm />} />
-          <Route path="upload-lesson-image" element={<TeacherLessonUploadImage />} />
-          <Route path="lesson-images" element={<LessonImageList />} />
-          <Route path="lesson-videos" element={<LessonVideoList />} />
-          <Route path="exams" element={<MyExams />} />
-          <Route path="results" element={<MyResults />} />
-          <Route path="students" element={<MyStudents />} />
-          <Route path="assessments" element={<MyAssessments />} />
-          <Route path="create-assessment" element={<CreateAssessment />} />
-          <Route path="assessment/:assessmentId" element={<TeacherAssessmentDetail />} />
-          <Route path="add-question" element={<AddQuestionForm />} />
-          <Route path="edit-lessons" element={<EditLessonsList />} />
-          <Route path="edit-lesson/:id" element={<EditLessonPage />} />
-          <Route path="upload-video" element={<VideoUploadOnly />} />
-          <Route path="edit-assessment/:id" element={<EditAssessment />} />
-          <Route path="view-assessment/:id" element={<ViewAssessment />} />
-          <Route path="assessment-builder" element={<AssessmentBuilder />} />
-          <Route path="all-assessments" element={<AllAssessments />} />
-        </Route>
+        <Route path="/teacher-dashboard/*" element={
+          <ProtectedRouteTeacher>
+            <TeacherDashboard />
+          </ProtectedRouteTeacher>
+        } />
 
         {/* Catch-all */}
         <Route path="*" element={<div>404 - Page Not Found</div>} />
@@ -84,4 +74,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default App;    

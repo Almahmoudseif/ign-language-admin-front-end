@@ -1,102 +1,48 @@
-import React, { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
-import AssessmentBuilder from './AssessmentBuilder'; // ✅ path sahihi
-import AllAssessments from './AllAssessments'; // ✅ ume-import pia hapa
+// src/Teacher/TeacherDashboard.js
+import React, { useEffect, useState } from "react";
+import { NavLink, Routes, Route, useNavigate } from "react-router-dom";
 
-// VideoUploadOnly component (exported separately)
-export const VideoUploadOnly = () => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [level, setLevel] = useState('');
-  const [video, setVideo] = useState(null);
-  const [message, setMessage] = useState('');
+// Import components zako
+import Lessons from "./MyLessons";
+import LessonUploadForm from "./LessonUploadForm";
+import TeacherLessonUploadImage from "./TeacherLessonUploadImage";
+import LessonImageList from "./LessonImageList";
+import VideoUploadOnly from "./VideoUploadOnly";   // ✅ default import, sio {}
+import LessonVideoList from "./LessonVideoList";
+import MyExams from "./MyExams";
+import MyResults from "./MyResults";
+import MyStudents from "./MyStudents";
+import MyAssessments from "./MyAssessments";
+import AllAssessments from "./AllAssessments";
+import CreateAssessment from "./CreateAssessment";
+import AddQuestionForm from "./AddQuestionForm";
+import EditLessonsList from "./EditLessonsList";
+import AssessmentBuilder from "./AssessmentBuilder";
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!video) {
-      setMessage('Tafadhali chagua faili la video.');
-      return;
-    }
-    if (!title || !description || !level) {
-      setMessage('Tafadhali jaza sehemu zote za fomu.');
-      return;
-    }
+const TeacherDashboard = () => {
+  const [teacher, setTeacher] = useState(null);
+  const navigate = useNavigate();
 
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('level', level);
-    formData.append('video', video);
+  // Load teacher data from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem("teacher");
+    if (stored) setTeacher(JSON.parse(stored));
+    else navigate("/teacher-login"); // redirect if no teacher
+  }, [navigate]);
 
-    try {
-      const res = await fetch('http://192.168.43.33:8080/api/lessons/upload/video', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (res.ok) {
-        setMessage('Video imepakiwa kwa mafanikio!');
-        setTitle('');
-        setDescription('');
-        setLevel('');
-        setVideo(null);
-      } else {
-        setMessage('Imeshindikana ku-upload video.');
-      }
-    } catch (error) {
-      console.error('Error uploading video:', error);
-      setMessage('Imeshindikana ku-upload video.');
-    }
+  const handleLogout = () => {
+    localStorage.removeItem("teacher");
+    navigate("/teacher-login");
   };
 
-  return (
-    <div style={styles.uploadContainer}>
-      <h2>Upload Video Pekee</h2>
-      {message && <p style={{ color: message.includes('Imeshindikana') ? 'red' : 'green' }}>{message}</p>}
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <input
-          type="text"
-          placeholder="Kichwa cha Somo"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          style={styles.input}
-          required
-        />
-        <textarea
-          placeholder="Maelezo ya Somo"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          style={styles.textarea}
-          required
-        />
-        <select
-          value={level}
-          onChange={(e) => setLevel(e.target.value)}
-          style={styles.input}
-          required
-        >
-          <option value="">Chagua Kiwango</option>
-          <option value="BEGINNER">Mwanzo</option>
-          <option value="INTERMEDIATE">Kati</option>
-          <option value="ADVANCED">Juu</option>
-        </select>
-        <input
-          type="file"
-          accept="video/mp4,video/*"
-          onChange={(e) => setVideo(e.target.files[0])}
-          style={styles.input}
-          required
-        />
-        <button type="submit" style={styles.button}>Upload Video</button>
-      </form>
-    </div>
-  );
-};
+  const navStyle = ({ isActive }) =>
+    isActive
+      ? { ...styles.menuItem, ...styles.activeMenuItem }
+      : styles.menuItem;
 
-// TeacherDashboard component
-const TeacherDashboard = () => {
   return (
     <div style={styles.container}>
+      {/* Sidebar */}
       <div style={styles.sidebar}>
         <h2 style={styles.logo}>Teacher Panel</h2>
         <ul style={styles.menu}>
@@ -110,102 +56,59 @@ const TeacherDashboard = () => {
           <li><NavLink to="results" style={navStyle}>📊 Results</NavLink></li>
           <li><NavLink to="students" style={navStyle}>👥 My Students</NavLink></li>
           <li><NavLink to="assessments" style={navStyle}>📂 Assessments</NavLink></li>
-          <li><NavLink to="all-assessments" style={navStyle}>📋 All Assessments</NavLink></li> {/* Hii ndio umeongeza */}
+          <li><NavLink to="all-assessments" style={navStyle}>📋 All Assessments</NavLink></li>
           <li><NavLink to="create-assessment" style={navStyle}>➕ Create Assessment</NavLink></li>
           <li><NavLink to="add-question" style={navStyle}>➕ Add Question</NavLink></li>
           <li><NavLink to="edit-lessons" style={navStyle}>✏️ Edit Lessons List</NavLink></li>
           <li><NavLink to="assessment-builder" style={navStyle}>🛠️ Assessment Builder</NavLink></li>
+          <li onClick={handleLogout} style={{ ...styles.menuItem, cursor: "pointer" }}>🚪 Logout</li>
         </ul>
       </div>
+
+      {/* Main content */}
       <div style={styles.content}>
-        <Outlet />
+        <h3>Welcome, {teacher?.fullName || "Teacher"}</h3>
+        <Routes>
+          <Route path="lessons" element={<Lessons />} />
+          <Route path="upload-lesson" element={<LessonUploadForm />} />
+          <Route path="upload-lesson-image" element={<TeacherLessonUploadImage />} />
+          <Route path="lesson-images" element={<LessonImageList />} />
+          <Route path="upload-video" element={<VideoUploadOnly />} />
+          <Route path="lesson-videos" element={<LessonVideoList />} />
+          <Route path="exams" element={<MyExams />} />
+          <Route path="results" element={<MyResults />} />
+          <Route path="students" element={<MyStudents />} />
+          <Route path="assessments" element={<MyAssessments />} />
+          <Route path="all-assessments" element={<AllAssessments />} />
+          <Route path="create-assessment" element={<CreateAssessment />} />
+          <Route path="add-question" element={<AddQuestionForm />} />
+          <Route path="edit-lessons" element={<EditLessonsList />} />
+          <Route path="assessment-builder" element={<AssessmentBuilder />} />
+          <Route index element={<h2>Select an option from sidebar</h2>} />
+        </Routes>
       </div>
     </div>
   );
 };
 
-const navStyle = ({ isActive }) =>
-  isActive
-    ? { ...styles.menuItem, ...styles.activeMenuItem }
-    : styles.menuItem;
-
 const styles = {
-  container: {
-    display: 'flex',
-    height: '100vh',
-    backgroundColor: '#f8f9fa',
-  },
-  sidebar: {
-    width: '250px',
-    backgroundColor: '#343a40',
-    color: '#fff',
-    padding: '20px',
-  },
-  logo: {
-    fontSize: '20px',
-    marginBottom: '30px',
-    textAlign: 'center',
-  },
-  menu: {
-    listStyleType: 'none',
-    padding: 0,
-  },
+  container: { display: "flex", height: "100vh", backgroundColor: "#f8f9fa" },
+  sidebar: { width: "250px", backgroundColor: "#343a40", color: "#fff", padding: "20px" },
+  logo: { fontSize: "20px", marginBottom: "30px", textAlign: "center" },
+  menu: { listStyleType: "none", padding: 0 },
   menuItem: {
-    display: 'block',
-    padding: '12px 10px',
-    marginBottom: '10px',
-    backgroundColor: '#495057',
-    borderRadius: '6px',
-    cursor: 'pointer',
-    userSelect: 'none',
-    color: 'white',
-    textDecoration: 'none',
-    transition: 'background-color 0.3s',
+    display: "block",
+    padding: "12px 10px",
+    marginBottom: "10px",
+    backgroundColor: "#495057",
+    borderRadius: "6px",
+    userSelect: "none",
+    color: "white",
+    textDecoration: "none",
+    transition: "background-color 0.3s",
   },
-  activeMenuItem: {
-    backgroundColor: '#007bff',
-    fontWeight: 'bold',
-  },
-  content: {
-    flex: 1,
-    padding: '20px',
-    overflowY: 'auto',
-  },
-  uploadContainer: {
-    maxWidth: 600,
-    margin: 'auto',
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 8,
-    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 15,
-  },
-  input: {
-    padding: 10,
-    fontSize: 16,
-    borderRadius: 6,
-    border: '1px solid #ccc',
-  },
-  textarea: {
-    padding: 10,
-    fontSize: 16,
-    borderRadius: 6,
-    border: '1px solid #ccc',
-    resize: 'vertical',
-  },
-  button: {
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    borderRadius: 6,
-    cursor: 'pointer',
-  },
+  activeMenuItem: { backgroundColor: "#007bff", fontWeight: "bold" },
+  content: { flex: 1, padding: "20px", overflowY: "auto" },
 };
 
 export default TeacherDashboard;

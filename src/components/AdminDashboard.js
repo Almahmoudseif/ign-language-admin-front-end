@@ -1,4 +1,3 @@
-// src/components/AdminDashboard.js
 import React from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
@@ -7,7 +6,9 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('admin'); // clear login info
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('registrationNumber');
     navigate('/');
   };
 

@@ -1,4 +1,3 @@
-// src/components/AdminResults.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Results.css';
@@ -10,7 +9,7 @@ const AdminResults = () => {
   const fetchResults = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/results');
-      setResults(response.data);
+      setResults(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Error fetching results:', error);
       alert('Tatizo kupokea data ya matokeo ya wanafunzi.');
@@ -19,17 +18,14 @@ const AdminResults = () => {
     }
   };
 
-  useEffect(() => {
-    fetchResults();
-  }, []);
+  useEffect(() => { fetchResults(); }, []);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Una uhakika unataka kufuta matokeo haya?')) return;
-
     try {
       await axios.delete(`http://localhost:8080/api/results/${id}`);
       alert('Result imefutwa kwa mafanikio.');
-      fetchResults(); // refresh table baada ya kufuta
+      fetchResults();
     } catch (error) {
       console.error('Error deleting result:', error);
       alert('Tatizo kufuta result.');
@@ -59,23 +55,18 @@ const AdminResults = () => {
             </tr>
           </thead>
           <tbody>
-            {results.map((result) => (
-              <tr key={result.id}>
-                <td>{result.student?.id || 'Unknown'}</td>
-                <td>{result.student?.name || 'Unknown'}</td>
-                <td>{result.assessment?.id || 'Unknown'}</td>
-                <td>{result.assessment?.lesson?.title || 'Unknown'}</td>
-                <td>{result.assessment?.title || 'Unknown'}</td>
-                <td>{result.score}</td>
-                <td>{result.grade}</td>
-                <td>{new Date(result.submittedAt).toLocaleString()}</td>
+            {results.map(r => (
+              <tr key={r.id}>
+                <td>{r.student?.id ?? 'Unknown'}</td>
+                <td>{r.student?.name ?? 'Unknown'}</td>
+                <td>{r.assessment?.id ?? 'Unknown'}</td>
+                <td>{r.assessment?.lesson?.title ?? 'Unknown'}</td>
+                <td>{r.assessment?.title ?? 'Unknown'}</td>
+                <td>{r.score}</td>
+                <td>{r.grade}</td>
+                <td>{r.submittedAt ? new Date(r.submittedAt).toLocaleString() : 'Unknown'}</td>
                 <td>
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(result.id)}
-                  >
-                    Delete
-                  </button>
+                  <button className="delete-btn" onClick={() => handleDelete(r.id)}>Delete</button>
                 </td>
               </tr>
             ))}

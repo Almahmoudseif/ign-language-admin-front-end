@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './TeacherLoginPage.css';
 
 const TeacherLoginPage = () => {
@@ -8,13 +9,31 @@ const TeacherLoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
 
-    // Hapa unaweza tumia API halisi ya backend
-    if (email === 'teacher@example.com' && password === 'password') {
-      navigate('/teacher-dashboard');
-    } else {
+    try {
+      const response = await axios.post('http://192.168.43.33:8080/api/auth/login', {
+        email,
+        password,
+      });
+
+      // assume backend inarudisha token na user info
+      const { token, user } = response.data;
+
+      if (user.role !== 'TEACHER') {
+        setError('Hii login ni kwa walimu tu');
+        return;
+      }
+
+      // weka token kwenye localStorage
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      navigate('/teacher-dashboard'); // navigate kwenye dashboard ya teacher
+    } catch (err) {
+      console.error('Login error:', err);
       setError('Email au nenosiri si sahihi');
     }
   };

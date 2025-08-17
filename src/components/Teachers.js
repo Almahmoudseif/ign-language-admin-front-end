@@ -20,7 +20,7 @@ const Teachers = () => {
     setLoading(true);
     try {
       const response = await axios.get(BASE_URL);
-      setUsers(response.data);
+      setUsers(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Error fetching users:', error);
       alert('Tatizo kupokea data ya users');
@@ -34,25 +34,24 @@ const Teachers = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (window.confirm('Una uhakika unataka kufuta user hii?')) {
-      try {
-        await axios.delete(`${BASE_URL}/${id}`);
-        alert('User imefutwa kwa mafanikio');
-        fetchUsers();
-      } catch (error) {
-        console.error('Error deleting user:', error);
-        alert('Tatizo kufuta user');
-      }
+    if (!window.confirm('Una uhakika unataka kufuta user hii?')) return;
+    try {
+      await axios.delete(`${BASE_URL}/${id}`);
+      alert('User imefutwa kwa mafanikio');
+      fetchUsers();
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      alert('Tatizo kufuta user');
     }
   };
 
   const handleEdit = (user) => {
     setEditUser(user);
     setEditForm({
-      fullName: user.fullName,
-      email: user.email,
-      registrationNumber: user.registrationNumber,
-      role: user.role,
+      fullName: user.fullName || '',
+      email: user.email || '',
+      registrationNumber: user.registrationNumber || '',
+      role: user.role || 'STUDENT',
       password: '',
     });
   };
@@ -61,7 +60,7 @@ const Teachers = () => {
     e.preventDefault();
     try {
       const updateData = { ...editForm };
-      if (!updateData.password) delete updateData.password;
+      if (!updateData.password) delete updateData.password; // avoid sending empty password
       await axios.put(`${BASE_URL}/${editUser.id}`, updateData);
       alert('User imebadilishwa kwa mafanikio');
       setEditUser(null);
@@ -73,7 +72,7 @@ const Teachers = () => {
   };
 
   if (loading) return <p>Inapakia users...</p>;
-  if (users.length === 0) return <p>Hakuna users waliopo.</p>;
+  if (!users.length) return <p>Hakuna users waliopo.</p>;
 
   return (
     <div className="teachers-container">
