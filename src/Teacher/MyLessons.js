@@ -1,26 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const MyLessons = ({ teacherId = 2 }) => {
+const MyLessons = () => {
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newImage, setNewImage] = useState(null);
-  const [uploadLessonId, setUploadLessonId] = useState(null);
   const [message, setMessage] = useState('');
   const BASE_URL = 'http://192.168.43.33:8080';
 
+  const teacherId = localStorage.getItem('teacherId');
+  const teacherName = localStorage.getItem('teacherName');
+
   useEffect(() => {
+    if (!teacherId) {
+      setMessage('❌ Teacher ID not found. Please login first.');
+      setLoading(false);
+      return;
+    }
+
     const fetchLessons = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/api/lessons/teacher/${teacherId}`);
         setLessons(res.data);
       } catch (err) {
         console.error('Error fetching lessons:', err);
-        setMessage('Kuna tatizo kupakua masomo.');
+        setMessage('There was an issue fetching lessons.');
       } finally {
         setLoading(false);
       }
     };
+
     fetchLessons();
   }, [teacherId]);
 
@@ -30,89 +38,66 @@ const MyLessons = ({ teacherId = 2 }) => {
     return encodeURI(fullUrl);
   };
 
-  const handleDelete = async (lessonId) => {
-    if (!window.confirm('Una uhakika unataka kufuta somo hili?')) return;
+  if (loading) return <p>Loading lessons...</p>;
 
-    try {
-      await axios.delete(`${BASE_URL}/api/lessons/${lessonId}`);
-      setLessons(lessons.filter(lesson => lesson.id !== lessonId));
-      setMessage('Somo limefutwa kwa mafanikio.');
-    } catch (err) {
-      console.error('Error deleting lesson:', err);
-      setMessage('Imeshindikana kufuta somo.');
-    }
-  };
-
-  const handleImageChange = (e, lessonId) => {
-    setNewImage(e.target.files[0]);
-    setUploadLessonId(lessonId);
-    setMessage('');
-  };
-
-  const handleImageUpload = async () => {
-    if (!newImage || !uploadLessonId) {
-      setMessage('Tafadhali chagua picha na somo sahihi.');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('file', newImage);
-
-    try {
-      await axios.put(`${BASE_URL}/api/lessons/${uploadLessonId}/image`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      setMessage('Picha imepakia upya kwa mafanikio.');
-      setNewImage(null);
-      setUploadLessonId(null);
-      // Refresh lessons
-      const res = await axios.get(`${BASE_URL}/api/lessons/teacher/${teacherId}`);
-      setLessons(res.data);
-    } catch (err) {
-      console.error('Error uploading image:', err);
-      setMessage('Imeshindikana kupakia picha.');
-    }
-  };
-
-  if (loading) return <p>Inapakia masomo...</p>;
+  // Split lessons: images left column, videos right column
+  const pictureLessons = lessons.filter(l => l.imageUrl);
+  const videoLessons = lessons.filter(l => l.videoUrl);
 
   return (
     <div style={styles.container}>
-      {message && <p style={styles.message}>{message}</p>}
-      {lessons.length === 0 ? (
-        <p>Huna masomo yaliyopakiwa.</p>
-      ) : (
-        lessons.map(lesson => (
-          <div key={lesson.id} style={styles.card}>
-            <h4>{lesson.title}</h4>
+      {teacherName && <h3>Welcome, {teacherName}</h3>}
+      {message && <p style={message.startsWith('❌') ? { color: 'red', fontWeight: 'bold' } : { color: 'green', fontWeight: 'bold' }}>{message}</p>}
 
-            {lesson.imageUrl && (
-              <img
-                src={getMediaUrl(lesson.imageUrl)}
-                alt={lesson.title}
-                style={styles.image}
-              />
-            )}
+      <div style={styles.columns}>
+        {/* Image column */}
+        <div style={styles.column}>
+          {pictureLessons.length === 0 ? (
+            <p>No image lessons available.</p>
+          ) : (
+            pictureLessons.map(lesson => (
+              <div key={lesson.id} style={styles.card}>
+                <h4>{lesson.title}</h4>
+                <p style={{ fontStyle: 'italic' }}>Level: {lesson.lessonLevel}</p>
+                {lesson.description && <p>{lesson.description}</p>}
+                <img
+                  src={getMediaUrl(lesson.imageUrl)}
+                  alt={lesson.title}
+                  style={styles.media}
+                  onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                  onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                  onClick={() => window.open(getMediaUrl(lesson.imageUrl), '_blank')}
+                />
+              </div>
+            ))
+          )}
+        </div>
 
-            {lesson.videoUrl && (
-              <video width="100%" height="auto" controls>
-                <source src={getMediaUrl(lesson.videoUrl)} type="video/mp4" />
-                Kivinjari chako hakiungi mkono video.
-              </video>
-            )}
-
-            <p>{lesson.description}</p>
-
-            <div style={styles.actions}>
-              <input type="file" accept="image/*" onChange={(e) => handleImageChange(e, lesson.id)} />
-              <button onClick={handleImageUpload} disabled={!newImage || uploadLessonId !== lesson.id}>
-                Badili Picha
-              </button>
-              <button onClick={() => handleDelete(lesson.id)} style={styles.deleteButton}>Futa Somo</button>
-            </div>
-          </div>
-        ))
-      )}
+        {/* Video column */}
+        <div style={styles.column}>
+          {videoLessons.length === 0 ? (
+            <p>No video lessons available.</p>
+          ) : (
+            videoLessons.map(lesson => (
+              <div key={lesson.id} style={styles.card}>
+                <h4>{lesson.title}</h4>
+                <p style={{ fontStyle: 'italic' }}>Level: {lesson.lessonLevel}</p>
+                {lesson.description && <p>{lesson.description}</p>}
+                <video
+                  style={styles.media}
+                  controls
+                  onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                  onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                  onClick={() => window.open(getMediaUrl(lesson.videoUrl), '_blank')}
+                >
+                  <source src={getMediaUrl(lesson.videoUrl)} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -120,44 +105,34 @@ const MyLessons = ({ teacherId = 2 }) => {
 const styles = {
   container: {
     padding: '20px',
+  },
+  columns: {
     display: 'flex',
-    flexWrap: 'wrap',
+    flexDirection: 'row',
+    gap: '20px',
+    justifyContent: 'space-between',
+  },
+  column: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
     gap: '20px',
   },
   card: {
-    width: '100%',
-    maxWidth: '400px',
     border: '1px solid #ccc',
     borderRadius: '10px',
     padding: '15px',
     backgroundColor: '#f9f9f9',
     boxShadow: '2px 2px 6px rgba(0,0,0,0.1)',
   },
-  image: {
+  media: {
     width: '100%',
-    maxHeight: '250px',
+    maxHeight: '200px',
     objectFit: 'cover',
-    borderRadius: '8px',
-    marginBottom: '10px',
-  },
-  actions: {
-    marginTop: '10px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-  },
-  deleteButton: {
-    backgroundColor: 'red',
-    color: 'white',
-    border: 'none',
-    padding: '8px',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
+    transition: 'transform 0.3s ease',
   },
-  message: {
-    color: 'green',
-    fontWeight: 'bold',
-  }
 };
 
 export default MyLessons;

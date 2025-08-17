@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const MyStudent = () => {
+const MyStudents = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -9,7 +9,7 @@ const MyStudent = () => {
   useEffect(() => {
     axios.get('http://localhost:8080/api/users/role/student')
       .then(response => {
-        // Ondoa duplicates kwa registrationNumber
+        // Remove duplicates by registrationNumber
         const uniqueStudents = response.data.filter((student, index, self) =>
           index === self.findIndex(s => s.registrationNumber === student.registrationNumber)
         );
@@ -31,7 +31,7 @@ const MyStudent = () => {
       {students.length === 0 ? (
         <p>No students found.</p>
       ) : (
-        <table border="1" cellPadding="8" cellSpacing="0" style={{width: '100%', textAlign: 'left'}}>
+        <table border="1" cellPadding="8" cellSpacing="0" style={{ width: '100%', textAlign: 'left' }}>
           <thead>
             <tr>
               <th>Full Name</th>
@@ -56,4 +56,4 @@ const MyStudent = () => {
   );
 };
 
-export default MyStudent;
+export default MyStudents;

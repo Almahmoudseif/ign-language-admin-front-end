@@ -8,10 +8,17 @@ const TeacherLessonUploadImage = () => {
   const [image, setImage] = useState(null);
   const [message, setMessage] = useState('');
 
+  const teacherId = localStorage.getItem('teacherId'); // hakikisha umehifadhi teacherId
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!image) {
-      setMessage('Tafadhali chagua picha.');
+      setMessage('❌ Please select an image.');
+      return;
+    }
+
+    if (!teacherId) {
+      setMessage('❌ Teacher ID not found. Please login first.');
       return;
     }
 
@@ -19,40 +26,42 @@ const TeacherLessonUploadImage = () => {
     formData.append('title', title);
     formData.append('description', description);
     formData.append('level', level);
-    formData.append('image', image);
+    formData.append('teacherId', teacherId);
+    formData.append('image', image); // send image only
 
     try {
-      await axios.post('http://192.168.43.33:8080/api/lessons/upload/image', formData, {
+      await axios.post('http://192.168.43.33:8080/api/lessons', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-      setMessage('✅ Picha imepakiwa kikamilifu!');
+      setMessage('✅ Image uploaded successfully!');
       setTitle('');
       setDescription('');
       setLevel('');
       setImage(null);
     } catch (err) {
       console.error(err);
-      setMessage('❌ Imeshindikana kupakia picha.');
+      setMessage('❌ Failed to upload image. Check server or network.');
     }
   };
 
   return (
     <div style={styles.container}>
-      <h2>Pakia Picha ya Somo</h2>
-      {message && <p>{message}</p>}
+      <h2>Upload Lesson Image</h2>
+      {message && <p style={{ fontWeight: 'bold', color: message.startsWith('❌') ? 'red' : 'green' }}>{message}</p>}
+
       <form onSubmit={handleSubmit} style={styles.form}>
         <input
           type="text"
-          placeholder="Kichwa cha somo"
+          placeholder="Lesson Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
           style={styles.input}
         />
         <textarea
-          placeholder="Maelezo ya somo"
+          placeholder="Lesson Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
@@ -64,7 +73,7 @@ const TeacherLessonUploadImage = () => {
           required
           style={styles.input}
         >
-          <option value="">Chagua kiwango</option>
+          <option value="">Select Level</option>
           <option value="BEGINNER">Beginner</option>
           <option value="INTERMEDIATE">Intermediate</option>
           <option value="ADVANCED">Advanced</option>
@@ -77,7 +86,7 @@ const TeacherLessonUploadImage = () => {
           style={styles.input}
         />
         <button type="submit" style={styles.button}>
-          Pakia Picha
+          Upload Image
         </button>
       </form>
     </div>
@@ -95,7 +104,7 @@ const styles = {
   },
   form: { display: 'flex', flexDirection: 'column', gap: '15px' },
   input: { padding: '10px', fontSize: '16px' },
-  textarea: { padding: '10px', height: '100px' },
+  textarea: { padding: '10px', height: '100px', fontSize: '16px' },
   button: {
     padding: '10px',
     backgroundColor: '#007bff',

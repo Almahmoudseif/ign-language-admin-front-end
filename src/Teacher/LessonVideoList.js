@@ -7,7 +7,7 @@ const LessonVideoList = () => {
   const [error, setError] = useState('');
   const BASE_URL = 'http://192.168.43.33:8080';
 
-  // Function ya kutengeneza URL kamili
+  // Build full media URL
   const getMediaUrl = (path) => {
     if (!path) return '';
     const fullUrl = path.startsWith('http') ? path : `${BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
@@ -22,18 +22,18 @@ const LessonVideoList = () => {
       })
       .catch(err => {
         console.error(err);
-        setError('Imeshindikana kupakua video za masomo.');
+        setError('Failed to load lesson videos.');
         setLoading(false);
       });
   }, []);
 
-  if (loading) return <p>Inapakia video za masomo...</p>;
+  if (loading) return <p>Loading lesson videos...</p>;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
-  if (videos.length === 0) return <p>Hakuna video za masomo zilizopatikana.</p>;
+  if (videos.length === 0) return <p>No lesson videos found.</p>;
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>Video za Masomo</h2>
+      <h2 style={styles.title}>Lesson Videos</h2>
       <ul style={styles.list}>
         {videos.map((video) => (
           <li key={video.id} style={styles.item}>
@@ -46,7 +46,7 @@ const LessonVideoList = () => {
               style={styles.video}
             >
               <source src={getMediaUrl(video.videoUrl)} type="video/mp4" />
-              Browser yako haiungi mkono video tag.
+              Your browser does not support the video tag.
             </video>
           </li>
         ))}

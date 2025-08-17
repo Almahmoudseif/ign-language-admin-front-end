@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const TeacherLoginPage = () => {
   const [registrationNumber, setRegistrationNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -22,6 +23,8 @@ const TeacherLoginPage = () => {
 
       if (response.data && response.data.role?.toLowerCase() === 'teacher') {
         localStorage.setItem('teacher', JSON.stringify(response.data));
+        localStorage.setItem('teacherId', response.data.id);
+        localStorage.setItem('teacherName', response.data.name);
         navigate('/teacher-dashboard');
       } else {
         setError('Invalid credentials or not a teacher');
@@ -49,11 +52,13 @@ const TeacherLoginPage = () => {
       fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif'
     },
     title: { textAlign: 'center', marginBottom: '25px', color: '#333' },
-    formGroup: { marginBottom: '20px' },
+    formGroup: { marginBottom: '20px', position: 'relative' },
     label: { display: 'block', fontWeight: 'bold', marginBottom: '8px', color: '#444' },
     input: { width: '100%', padding: '10px 12px', fontSize: '15px', border: '1px solid #ccc', borderRadius: '8px', transition: 'border 0.3s ease' },
+    toggleBtn: { position: 'absolute', right: '12px', top: '35px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', color: '#007bff' },
     button: { width: '100%', padding: '12px', backgroundColor: '#007bff', border: 'none', color: 'white', fontSize: '16px', borderRadius: '8px', cursor: 'pointer', transition: 'background-color 0.3s ease' },
-    error: { color: 'red', marginBottom: '15px', textAlign: 'center' }
+    error: { color: 'red', marginBottom: '15px', textAlign: 'center' },
+    forgot: { textAlign: 'right', marginTop: '10px', color: '#007bff', cursor: 'pointer', fontSize: '14px' }
   };
 
   return (
@@ -74,12 +79,25 @@ const TeacherLoginPage = () => {
         <div style={styles.formGroup}>
           <label style={styles.label}>Password</label>
           <input
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={styles.input}
             required
           />
+          <button
+            type="button"
+            style={styles.toggleBtn}
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? 'Hide' : 'Show'}
+          </button>
+        </div>
+        <div
+          style={styles.forgot}
+          onClick={() => alert('Forgot password clicked!')}
+        >
+          Forgot Password?
         </div>
         <button type="submit" style={styles.button}>Login</button>
       </form>

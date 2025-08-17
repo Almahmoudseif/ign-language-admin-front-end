@@ -28,9 +28,9 @@ const MyAssessments = () => {
 
   useEffect(() => {
     const filtered = allAssessments.filter(a =>
-      a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      a.lesson.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      a.type.toLowerCase().includes(searchQuery.toLowerCase())
+      (a.title && a.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (a.lesson && String(a.lesson.title || a.lesson).toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (a.type && String(a.type).toLowerCase().includes(searchQuery.toLowerCase()))
     );
     setFilteredAssessments(filtered);
   }, [searchQuery, allAssessments]);
@@ -113,9 +113,9 @@ const MyAssessments = () => {
               <tr key={a.id}>
                 <td style={styles.td}>{index + 1}</td>
                 <td style={styles.td}>{a.title}</td>
-                <td style={styles.td}>{a.lesson}</td>
-                <td style={styles.td}>{a.type}</td>
-                <td style={styles.td}>{a.dueDate}</td>
+                <td style={styles.td}>{a.lesson?.title || a.lesson || 'N/A'}</td>
+                <td style={styles.td}>{a.type || 'N/A'}</td>
+                <td style={styles.td}>{a.dueDate || 'N/A'}</td>
                 <td style={styles.td}>
                   <button
                     style={styles.actionBtn}

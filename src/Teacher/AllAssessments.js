@@ -14,7 +14,7 @@ const AllAssessments = () => {
       setAssessments(res.data);
       setLoading(false);
     } catch (err) {
-      setError('Kosa katika kupakua assessments: ' + err.message);
+      setError('Error fetching assessments: ' + err.message);
       setLoading(false);
     }
   };
@@ -24,36 +24,41 @@ const AllAssessments = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Una uhakika unataka kufuta assessment hii?')) return;
+    if (!window.confirm('Are you sure you want to delete this assessment?')) return;
 
     try {
       await axios.delete(`http://192.168.43.33:8080/api/assessments/${id}`);
       setAssessments(assessments.filter(a => a.id !== id));
-      alert('Assessment imefutwa.');
+      alert('Assessment deleted successfully.');
     } catch (err) {
-      alert('Kosa wakati wa kufuta: ' + err.message);
+      alert('Error while deleting: ' + err.message);
     }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
   };
 
   return (
     <div style={{ maxWidth: 900, margin: 'auto', padding: 20 }}>
-      <h2>Orodha ya Assessments Zote</h2>
+      <h2>All Assessments</h2>
 
-      {loading && <p>Inapakia assessments...</p>}
+      {loading && <p>Loading assessments...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {!loading && assessments.length === 0 && <p>Hakuna assessments zilizopo.</p>}
+      {!loading && assessments.length === 0 && <p>No assessments found.</p>}
 
       {!loading && assessments.length > 0 && (
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ backgroundColor: '#f0f0f0' }}>
               <th style={{ border: '1px solid #ccc', padding: 8 }}>#</th>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Kichwa</th>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Maelezo</th>
+              <th style={{ border: '1px solid #ccc', padding: 8 }}>Title</th>
+              <th style={{ border: '1px solid #ccc', padding: 8 }}>Description</th>
               <th style={{ border: '1px solid #ccc', padding: 8 }}>Level</th>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Tarehe</th>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Vitendo</th>
+              <th style={{ border: '1px solid #ccc', padding: 8 }}>Date</th>
+              <th style={{ border: '1px solid #ccc', padding: 8 }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -63,7 +68,7 @@ const AllAssessments = () => {
                 <td style={{ border: '1px solid #ccc', padding: 8 }}>{a.title}</td>
                 <td style={{ border: '1px solid #ccc', padding: 8 }}>{a.description}</td>
                 <td style={{ border: '1px solid #ccc', padding: 8 }}>{a.level}</td>
-                <td style={{ border: '1px solid #ccc', padding: 8 }}>{a.date}</td>
+                <td style={{ border: '1px solid #ccc', padding: 8 }}>{formatDate(a.date)}</td>
                 <td style={{ border: '1px solid #ccc', padding: 8 }}>
                   <Link
                     to={`/teacher-dashboard/view-assessment/${a.id}`}
@@ -76,7 +81,7 @@ const AllAssessments = () => {
                       borderRadius: '4px'
                     }}
                   >
-                    Angalia
+                    View
                   </Link>
                   <Link
                     to={`/teacher-dashboard/edit-assessment/${a.id}`}
@@ -89,7 +94,7 @@ const AllAssessments = () => {
                       borderRadius: '4px'
                     }}
                   >
-                    Hariri
+                    Edit
                   </Link>
                   <button
                     onClick={() => handleDelete(a.id)}
@@ -102,7 +107,7 @@ const AllAssessments = () => {
                       cursor: 'pointer'
                     }}
                   >
-                    Futa
+                    Delete
                   </button>
                 </td>
               </tr>

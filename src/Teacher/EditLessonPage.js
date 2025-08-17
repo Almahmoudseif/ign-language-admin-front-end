@@ -29,7 +29,7 @@ const EditLessonPage = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Imeshindikana kupakia somo:', error);
+        console.error('Failed to load lesson:', error);
         setLoading(false);
       });
   }, [id]);
@@ -43,35 +43,35 @@ const EditLessonPage = () => {
     e.preventDefault();
     axios.put(`http://192.168.43.33:8080/api/lessons/${id}`, formData)
       .then(() => {
-        alert('Somo limehaririwa kwa mafanikio!');
+        alert('Lesson updated successfully!');
         navigate('/teacher-dashboard');
       })
       .catch((error) => {
-        console.error('Imeshindikana kuhariri somo:', error);
-        alert('Kuna tatizo katika kuhariri somo.');
+        console.error('Failed to update lesson:', error);
+        alert('There was an error updating the lesson.');
       });
   };
 
   if (loading) {
-    return <div>Inapakia somo...</div>;
+    return <div>Loading lesson...</div>;
   }
 
   return (
     <div style={{ padding: '20px' }}>
-      <h2>Hariri Somo</h2>
+      <h2>Edit Lesson</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Jina la Somo:</label><br />
+          <label>Lesson Title:</label><br />
           <input type="text" name="title" value={formData.title} onChange={handleChange} required />
         </div>
         <div>
-          <label>Maelezo:</label><br />
+          <label>Description:</label><br />
           <textarea name="description" value={formData.description} onChange={handleChange} rows="4" required />
         </div>
         <div>
-          <label>Kiwango cha Somo:</label><br />
+          <label>Lesson Level:</label><br />
           <select name="level" value={formData.level} onChange={handleChange} required>
-            <option value="">Chagua kiwango</option>
+            <option value="">Select level</option>
             <option value="BEGINNER">Beginner</option>
             <option value="INTERMEDIATE">Intermediate</option>
             <option value="ADVANCED">Advanced</option>
@@ -93,12 +93,12 @@ const EditLessonPage = () => {
             <div style={{ marginTop: '10px' }}>
               <video width="300" controls>
                 <source src={formData.videoUrl} type="video/mp4" />
-                Kivinjari chako hakiungi mkono video.
+                Your browser does not support the video tag.
               </video>
             </div>
           )}
         </div>
-        <button type="submit" style={{ marginTop: '20px' }}>Hifadhi Mabadiliko</button>
+        <button type="submit" style={{ marginTop: '20px' }}>Save Changes</button>
       </form>
     </div>
   );

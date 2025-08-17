@@ -4,29 +4,45 @@ import { Link } from 'react-router-dom';
 const EditLessonsList = () => {
   const [lessons, setLessons] = useState([]);
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://192.168.43.33:8080/api/lessons')
-      .then(res => res.json())
-      .then(data => setLessons(data))
-      .catch(err => {
+    const fetchLessons = async () => {
+      try {
+        const res = await fetch('http://192.168.43.33:8080/api/lessons');
+        if (!res.ok) throw new Error('Network response was not ok');
+        const data = await res.json();
+        setLessons(data);
+        if (data.length === 0) setMessage('No lessons found.');
+      } catch (err) {
         console.error(err);
-        setMessage('Imeshindikana kupata lessons.');
-      });
+        setMessage('Failed to fetch lessons.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLessons();
   }, []);
+
+  if (loading) {
+    return <div style={styles.container}><p>Loading lessons...</p></div>;
+  }
 
   return (
     <div style={styles.container}>
-      <h2>Orodha ya Lessons kwa Ku-edit</h2>
-      {message && <p style={{color: 'red'}}>{message}</p>}
-      {lessons.length === 0 ? (
-        <p>Hakuna lessons zilizopatikana.</p>
-      ) : (
+      <h2>Lessons List for Editing</h2>
+      {message && <p style={{ color: 'red' }}>{message}</p>}
+      {lessons.length > 0 && (
         <ul style={styles.list}>
           {lessons.map(lesson => (
             <li key={lesson.id} style={styles.listItem}>
-              <strong>{lesson.title}</strong> - {lesson.level}
-              <Link to={`/teacher-dashboard/edit-lesson/${lesson.id}`} style={styles.editLink}>✏️ Hariri</Link>
+              <div>
+                <strong>{lesson.title}</strong> - {lesson.level}
+              </div>
+              <Link to={`/teacher-dashboard/edit-lesson/${lesson.id}`} style={styles.editLink}>
+                ✏️ Edit
+              </Link>
             </li>
           ))}
         </ul>
@@ -58,7 +74,7 @@ const styles = {
   },
   editLink: {
     textDecoration: 'none',
-    color: '#007bff', 
+    color: '#007bff',
     fontWeight: 'bold',
     cursor: 'pointer',
   },

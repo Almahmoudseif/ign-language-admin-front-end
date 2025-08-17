@@ -21,16 +21,16 @@ const AddLessonForm = ({ onLessonAdded }) => {
     e.preventDefault();
     axios.post('http://localhost:8080/api/lessons', lesson)
       .then(() => {
-        setMessage('✅ Mafunzo yameongezwa!');
+        setMessage('✅ Lesson added successfully!');
         setLesson({ title: '', description: '', level: 'BEGINNER' });
         if (onLessonAdded) onLessonAdded();
       })
-      .catch(() => setMessage('❌ Hitilafu: Mafunzo hayakuongezwa.'));
+      .catch(() => setMessage('❌ Error: Lesson could not be added.'));
   };
 
   return (
     <form className="add-lesson-form" onSubmit={handleSubmit}>
-      <h3>Ongeza Mafunzo</h3>
+      <h3>Add Lesson</h3>
 
       <label>Title:</label>
       <input
@@ -60,7 +60,7 @@ const AddLessonForm = ({ onLessonAdded }) => {
         <option value="ADVANCED">Advanced</option>
       </select>
 
-      <button type="submit">Hifadhi Mafunzo</button>
+      <button type="submit">Save Lesson</button>
 
       {message && <p className="form-message">{message}</p>}
     </form>

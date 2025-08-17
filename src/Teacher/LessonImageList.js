@@ -4,7 +4,8 @@ import axios from 'axios';
 const LessonImageList = () => {
   const [lessons, setLessons] = useState([]);
   const [editingLessonId, setEditingLessonId] = useState(null);
-  const [newImage, setNewImage] = useState(null);
+  const [newMedia, setNewMedia] = useState(null);
+  const [mediaType, setMediaType] = useState('image'); // 'image' or 'video'
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const BASE_URL = 'http://192.168.43.33:8080';
@@ -16,7 +17,7 @@ const LessonImageList = () => {
       setLessons(res.data);
     } catch (error) {
       console.error('Failed to fetch lessons:', error);
-      setMessage('❌ Tatizo kuleta masomo.');
+      setMessage('❌ Failed to fetch lessons.');
     } finally {
       setLoading(false);
     }
@@ -27,41 +28,48 @@ const LessonImageList = () => {
   }, []);
 
   const handleDelete = async (lessonId) => {
-    if (!window.confirm("Unataka kufuta somo hili kabisa?")) return;
+    if (!window.confirm("Are you sure you want to permanently delete this lesson?")) return;
     try {
       await axios.delete(`${BASE_URL}/api/lessons/${lessonId}`);
-      setMessage("✅ Somo limefutwa kwa mafanikio");
+      setMessage("✅ Lesson deleted successfully");
       await fetchLessons();
     } catch (error) {
       console.error('Error deleting lesson:', error);
-      setMessage('❌ Tatizo kufuta somo.');
+      setMessage('❌ Failed to delete lesson.');
     }
   };
 
-  const handleUpdateImage = async (lessonId) => {
-    if (!newImage) {
-      setMessage('❌ Tafadhali chagua picha mpya kabla ya kusasisha.');
+  const handleUpdateMedia = async (lessonId) => {
+    if (!newMedia) {
+      setMessage(`❌ Please choose a ${mediaType} before updating.`);
       return;
     }
 
     const formData = new FormData();
-    formData.append('file', newImage);
+    formData.append('file', newMedia);
+
+    const endpoint =
+      mediaType === 'image'
+        ? `${BASE_URL}/api/lessons/${lessonId}/image`
+        : `${BASE_URL}/api/lessons/${lessonId}/video`;
 
     try {
-      await axios.put(`${BASE_URL}/api/lessons/update/image/${lessonId}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+      await axios.put(endpoint, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-      setMessage('✅ Picha imesasishwa vizuri!');
+
+      setMessage(`✅ ${mediaType === 'image' ? 'Image' : 'Video'} updated successfully!`);
       setEditingLessonId(null);
-      setNewImage(null);
+      setNewMedia(null);
+      setMediaType('image');
       await fetchLessons();
     } catch (error) {
-      console.error('Error updating image:', error);
-      setMessage('❌ Imeshindikana kusasisha picha.');
+      console.error('Error updating media:', error);
+      setMessage(`❌ Failed to update ${mediaType}.`);
     }
   };
 
-  const getFullImageUrl = (url) => {
+  const getFullUrl = (url) => {
     if (!url) return '';
     const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
     return encodeURI(fullUrl);
@@ -69,7 +77,7 @@ const LessonImageList = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h2>Masomo Yaliyopakiwa</h2>
+      <h2>Uploaded Lessons</h2>
       {message && (
         <p style={{ color: message.startsWith('❌') ? 'red' : 'green', fontWeight: 'bold' }}>
           {message}
@@ -77,25 +85,27 @@ const LessonImageList = () => {
       )}
 
       {loading ? (
-        <p>Inapakia masomo...</p>
+        <p>Loading lessons...</p>
       ) : lessons.length === 0 ? (
-        <p>Hakuna masomo yaliyopakiwa bado.</p>
+        <p>No lessons uploaded yet.</p>
       ) : (
         lessons.map((lesson) => {
-          const imageUrl = getFullImageUrl(lesson.imageUrl);
-          const videoUrl = getFullImageUrl(lesson.videoUrl);
+          const imageUrl = getFullUrl(lesson.imageUrl);
+          const videoUrl = getFullUrl(lesson.videoUrl);
 
           return (
             <div key={lesson.id} style={styles.card}>
-              <img
-                src={imageUrl || 'https://via.placeholder.com/300x200?text=Hakuna+Picha'}
-                alt={lesson.title}
-                style={styles.image}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
-                }}
-              />
+              {lesson.imageUrl && (
+                <img
+                  src={imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'}
+                  alt={lesson.title}
+                  style={styles.image}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
+                  }}
+                />
+              )}
 
               {lesson.videoUrl && (
                 <video
@@ -107,7 +117,7 @@ const LessonImageList = () => {
                   }}
                 >
                   <source src={videoUrl} type="video/mp4" />
-                  Browser yako haiungi mkono video.
+                  Your browser does not support the video tag.
                 </video>
               )}
 
@@ -116,34 +126,56 @@ const LessonImageList = () => {
 
               {editingLessonId === lesson.id ? (
                 <>
+                  <select
+                    value={mediaType}
+                    onChange={(e) => setMediaType(e.target.value)}
+                    style={{ marginBottom: 10, padding: 5 }}
+                  >
+                    <option value="image">Image</option>
+                    <option value="video">Video</option>
+                  </select>
                   <input
                     type="file"
-                    accept="image/*"
-                    onChange={(e) => setNewImage(e.target.files[0])}
+                    accept={mediaType + '/*'}
+                    onChange={(e) => setNewMedia(e.target.files[0])}
+                    style={{ marginBottom: 10 }}
                   />
-                  <button onClick={() => handleUpdateImage(lesson.id)}>Sasisha</button>
-                  <button onClick={() => {
-                    setEditingLessonId(null);
-                    setNewImage(null);
-                    setMessage('');
-                  }}>
-                    Ghairi
+                  <button
+                    onClick={() => handleUpdateMedia(lesson.id)}
+                    style={{ marginRight: 10, padding: '5px 10px', backgroundColor: '#28a745', color: 'white', border: 'none', cursor: 'pointer' }}
+                  >
+                    Update
+                  </button>
+                  <button
+                    onClick={() => {
+                      setEditingLessonId(null);
+                      setNewMedia(null);
+                      setMediaType('image');
+                      setMessage('');
+                    }}
+                    style={{ padding: '5px 10px', backgroundColor: '#6c757d', color: 'white', border: 'none', cursor: 'pointer' }}
+                  >
+                    Cancel
                   </button>
                 </>
               ) : (
                 <>
-                  <button onClick={() => {
-                    setEditingLessonId(lesson.id);
-                    setNewImage(null);
-                    setMessage('');
-                  }}>
-                    Sasisha Picha
+                  <button
+                    onClick={() => {
+                      setEditingLessonId(lesson.id);
+                      setNewMedia(null);
+                      setMessage('');
+                      setMediaType('image');
+                    }}
+                    style={{ marginRight: 10, padding: '5px 10px', backgroundColor: '#007bff', color: 'white', border: 'none', cursor: 'pointer' }}
+                  >
+                    Update Media
                   </button>
                   <button
                     onClick={() => handleDelete(lesson.id)}
-                    style={{ backgroundColor: 'red', color: 'white' }}
+                    style={{ backgroundColor: 'red', color: 'white', padding: '5px 10px', border: 'none', cursor: 'pointer' }}
                   >
-                    Futa Somo
+                    Delete Lesson
                   </button>
                 </>
               )}
@@ -177,7 +209,7 @@ const styles = {
     height: 200,
     borderRadius: 8,
     marginBottom: 10,
-  }
+  },
 };
 
 export default LessonImageList;

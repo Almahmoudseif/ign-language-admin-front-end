@@ -23,7 +23,6 @@ const AddQuestionForm = ({ assessmentId, onQuestionAdded }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate inputs
     if (
       !questionText.trim() ||
       !optionA.trim() ||
@@ -32,14 +31,14 @@ const AddQuestionForm = ({ assessmentId, onQuestionAdded }) => {
       !optionD.trim() ||
       !correctOption
     ) {
-      setMessage('❌ Tafadhali jaza sehemu zote.');
+      setMessage('❌ Please fill in all fields.');
       return;
     }
 
     const validOptions = ['A', 'B', 'C', 'D'];
     const correctOptionUpper = correctOption.toUpperCase();
     if (!validOptions.includes(correctOptionUpper)) {
-      setMessage('❌ Chaguo sahihi lazima iwe mojawapo kati ya A, B, C au D.');
+      setMessage('❌ Correct option must be one of A, B, C, or D.');
       return;
     }
 
@@ -48,89 +47,74 @@ const AddQuestionForm = ({ assessmentId, onQuestionAdded }) => {
 
     try {
       await axios.post('http://192.168.43.33:8080/api/questions', {
-        assessmentId: assessmentId, // tumia assessmentId moja kwa moja
+        assessmentId: assessmentId,
         content: questionText.trim(),
         imageUrl: null,
         videoUrl: null,
         answers: [
-          { content: optionA.trim(), correct: correctOptionUpper === 'A' },
-          { content: optionB.trim(), correct: correctOptionUpper === 'B' },
-          { content: optionC.trim(), correct: correctOptionUpper === 'C' },
-          { content: optionD.trim(), correct: correctOptionUpper === 'D' },
+          { label: 'A', content: optionA.trim(), correct: correctOptionUpper === 'A' },
+          { label: 'B', content: optionB.trim(), correct: correctOptionUpper === 'B' },
+          { label: 'C', content: optionC.trim(), correct: correctOptionUpper === 'C' },
+          { label: 'D', content: optionD.trim(), correct: correctOptionUpper === 'D' },
         ],
       });
 
-      setMessage('✅ Swali limeongezwa kikamilifu.');
+      setMessage('✅ Question added successfully.');
       resetForm();
-
       if (onQuestionAdded) onQuestionAdded();
     } catch (error) {
       console.error('Error:', error.response?.data || error.message);
-      setMessage('❌ Kuna tatizo wakati wa kuwasilisha swali.');
+      setMessage('❌ There was an issue submitting the question.');
     } finally {
       setLoading(false);
     }
   };
 
+  const renderInput = (label, value, setter) => (
+    <div style={{ position: 'relative' }}>
+      <span style={styles.optionLabel}>{label}</span>
+      <input
+        type="text"
+        placeholder={`Option ${label}`}
+        value={value}
+        onChange={(e) => setter(e.target.value)}
+        style={styles.inputWithLabel}
+        disabled={loading}
+      />
+    </div>
+  );
+
   return (
     <div style={styles.container}>
-      <h2>Ongeza Swali Jipya</h2>
+      <h2>Add New Question</h2>
       {message && <p>{message}</p>}
       <form onSubmit={handleSubmit} style={styles.form}>
         <input
           type="text"
-          placeholder="Swali"
+          placeholder="Question"
           value={questionText}
           onChange={(e) => setQuestionText(e.target.value)}
           style={styles.input}
           disabled={loading}
         />
-        <input
-          type="text"
-          placeholder="Chaguo A"
-          value={optionA}
-          onChange={(e) => setOptionA(e.target.value)}
-          style={styles.input}
-          disabled={loading}
-        />
-        <input
-          type="text"
-          placeholder="Chaguo B"
-          value={optionB}
-          onChange={(e) => setOptionB(e.target.value)}
-          style={styles.input}
-          disabled={loading}
-        />
-        <input
-          type="text"
-          placeholder="Chaguo C"
-          value={optionC}
-          onChange={(e) => setOptionC(e.target.value)}
-          style={styles.input}
-          disabled={loading}
-        />
-        <input
-          type="text"
-          placeholder="Chaguo D"
-          value={optionD}
-          onChange={(e) => setOptionD(e.target.value)}
-          style={styles.input}
-          disabled={loading}
-        />
+        {renderInput('A', optionA, setOptionA)}
+        {renderInput('B', optionB, setOptionB)}
+        {renderInput('C', optionC, setOptionC)}
+        {renderInput('D', optionD, setOptionD)}
         <select
           value={correctOption}
           onChange={(e) => setCorrectOption(e.target.value)}
           style={{ ...styles.input, cursor: 'pointer' }}
           disabled={loading}
         >
-          <option value="">Chagua Jibu Sahihi</option>
+          <option value="">Select Correct Answer</option>
           <option value="A">A</option>
           <option value="B">B</option>
           <option value="C">C</option>
           <option value="D">D</option>
         </select>
         <button type="submit" style={styles.button} disabled={loading}>
-          {loading ? 'Inatuma...' : 'Wasilisha Swali'}
+          {loading ? 'Submitting...' : 'Submit Question'}
         </button>
       </form>
     </div>
@@ -157,6 +141,22 @@ const styles = {
     borderRadius: '6px',
     border: '1px solid #ccc',
     fontSize: '16px',
+  },
+  inputWithLabel: {
+    padding: '10px 10px 10px 30px',
+    borderRadius: '6px',
+    border: '1px solid #ccc',
+    fontSize: '16px',
+    width: '100%',
+  },
+  optionLabel: {
+    position: 'absolute',
+    left: '8px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    color: '#333',
   },
   button: {
     padding: '12px',

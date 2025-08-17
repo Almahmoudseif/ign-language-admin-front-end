@@ -12,7 +12,7 @@ const LessonUploadForm = () => {
   const imageRef = useRef();
   const videoRef = useRef();
 
-  const teacherId = 50; // badilisha na teacherId halisi uliyonayo
+  const teacherId = 50; // replace with your actual teacherId
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,7 +37,7 @@ const LessonUploadForm = () => {
       const resultText = await res.text();
 
       if (res.ok) {
-        setMessage('✅ Somo limepakiwa kwa mafanikio!');
+        setMessage('✅ Lesson uploaded successfully!');
         setTitle('');
         setDescription('');
         setLevel('');
@@ -46,28 +46,28 @@ const LessonUploadForm = () => {
         imageRef.current.value = '';
         videoRef.current.value = '';
       } else {
-        setMessage(`⚠️ Hitilafu: ${resultText}`);
+        setMessage(`⚠️ Error: ${resultText}`);
       }
     } catch (err) {
       setLoading(false);
-      setMessage('⛔ Hitilafu ya mtandao. Tafadhali jaribu tena.');
+      setMessage('⛔ Network error. Please try again.');
     }
   };
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.heading}>Pakia Somo Jipya</h2>
+      <h2 style={styles.heading}>Upload New Lesson</h2>
       <form onSubmit={handleSubmit} style={styles.form} encType="multipart/form-data">
         <input
           type="text"
-          placeholder="Jina la Somo"
+          placeholder="Lesson Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
           style={styles.input}
         />
         <textarea
-          placeholder="Maelezo ya Somo"
+          placeholder="Lesson Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
@@ -79,13 +79,13 @@ const LessonUploadForm = () => {
           required
           style={styles.input}
         >
-          <option value="">Chagua Ngazi</option>
+          <option value="">Select Level</option>
           <option value="BEGINNER">Beginner</option>
           <option value="INTERMEDIATE">Intermediate</option>
           <option value="ADVANCED">Advanced</option>
         </select>
 
-        <label style={styles.label}>Pakia Picha:</label>
+        <label style={styles.label}>Upload Image:</label>
         <input
           type="file"
           accept="image/*"
@@ -94,7 +94,7 @@ const LessonUploadForm = () => {
           style={styles.input}
         />
 
-        <label style={styles.label}>Pakia Video:</label>
+        <label style={styles.label}>Upload Video:</label>
         <input
           type="file"
           accept="video/*"
@@ -104,7 +104,7 @@ const LessonUploadForm = () => {
         />
 
         <button type="submit" style={styles.button} disabled={loading}>
-          {loading ? 'Inapakia...' : 'Upload Somo'}
+          {loading ? 'Uploading...' : 'Upload Lesson'}
         </button>
       </form>
       {message && <p style={styles.message}>{message}</p>}

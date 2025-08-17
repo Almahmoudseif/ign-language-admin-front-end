@@ -27,7 +27,7 @@ const EditAssessment = () => {
           title: data.title || '',
           description: data.description || '',
           level: data.level || '',
-          dueDate: data.dueDate ? data.dueDate.split('T')[0] : ''  // format date to yyyy-mm-dd
+          dueDate: data.dueDate ? data.dueDate.split('T')[0] : '' // format date to yyyy-mm-dd
         });
         setLoading(false);
       })
@@ -58,7 +58,7 @@ const EditAssessment = () => {
     })
       .then(res => {
         if (!res.ok) throw new Error('Failed to update assessment');
-        alert('Assessment imehaririwa kwa mafanikio!');
+        alert('Assessment updated successfully!');
         navigate('/teacher-dashboard/assessments');
       })
       .catch(err => {
@@ -66,15 +66,15 @@ const EditAssessment = () => {
       });
   };
 
-  if (loading) return <p>Inapakia assessment...</p>;
-  if (error) return <p style={{ color: 'red' }}>Kosa: {error}</p>;
+  if (loading) return <p>Loading assessment...</p>;
+  if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
 
   return (
     <div style={{ maxWidth: 600, margin: 'auto', padding: 20 }}>
-      <h2>Hariri Assessment</h2>
+      <h2>Edit Assessment</h2>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
         <label>
-          Kichwa:
+          Title:
           <input
             type="text"
             name="title"
@@ -85,7 +85,7 @@ const EditAssessment = () => {
           />
         </label>
         <label>
-          Maelezo:
+          Description:
           <textarea
             name="description"
             value={assessment.description}
@@ -96,7 +96,7 @@ const EditAssessment = () => {
           />
         </label>
         <label>
-          Kiwango:
+          Level:
           <select
             name="level"
             value={assessment.level}
@@ -104,14 +104,14 @@ const EditAssessment = () => {
             required
             style={{ width: '100%', padding: 8 }}
           >
-            <option value="">Chagua Kiwango</option>
+            <option value="">Select Level</option>
             <option value="BEGINNER">BEGINNER</option>
             <option value="INTERMEDIATE">INTERMEDIATE</option>
             <option value="ADVANCED">ADVANCED</option>
           </select>
         </label>
         <label>
-          Tarehe ya Kumalizika:
+          Due Date:
           <input
             type="date"
             name="dueDate"
@@ -132,7 +132,7 @@ const EditAssessment = () => {
             cursor: 'pointer',
           }}
         >
-          Hifadhi Mabadiliko
+          Save Changes
         </button>
       </form>
     </div>

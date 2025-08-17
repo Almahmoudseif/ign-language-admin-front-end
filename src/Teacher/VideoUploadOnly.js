@@ -7,58 +7,67 @@ const VideoUploadOnly = () => {
   const [video, setVideo] = useState(null);
   const [message, setMessage] = useState('');
 
+  // Teacher info is taken from localStorage after login
+  const teacherId = localStorage.getItem('teacherId'); // must be saved during login
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!video || !title || !description || !level) {
-      setMessage('Tafadhali jaza sehemu zote.');
+      setMessage('⚠️ Please fill in all fields.');
+      return;
+    }
+
+    if (!teacherId) {
+      setMessage('❌ Teacher is not logged in or not found.');
       return;
     }
 
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
-    formData.append('level', level.toUpperCase()); // Hii ndiyo line iliyoongezwa
+    formData.append('level', level.toUpperCase());
+    formData.append('teacherId', teacherId); // automatic teacher assignment
     formData.append('video', video);
 
     try {
-      const res = await fetch('http://192.168.43.33:8080/api/lessons/upload/video', {
+      const res = await fetch('http://192.168.43.33:8080/api/lessons', {
         method: 'POST',
         body: formData,
       });
 
       if (res.ok) {
-        setMessage('✅ Video imepakiwa kikamilifu!');
+        setMessage('✅ Video uploaded successfully!');
         setTitle('');
         setDescription('');
         setLevel('');
         setVideo(null);
       } else {
         const errText = await res.text();
-        setMessage(`❌ Imeshindikana: ${errText}`);
+        setMessage(`❌ Upload failed: ${errText}`);
       }
     } catch (error) {
-      setMessage(`❌ Hitilafu ya mtandao au server.`);
+      setMessage('❌ Network or server error.');
     }
   };
 
   return (
     <div style={styles.container}>
-      <h2>Upload Video Pekee</h2>
+      <h2>Upload Lesson Video</h2>
       {message && (
         <p style={{ color: message.startsWith('❌') ? 'red' : 'green' }}>{message}</p>
       )}
       <form onSubmit={handleSubmit} style={styles.form}>
         <input
           type="text"
-          placeholder="Kichwa cha Somo"
+          placeholder="Lesson Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           style={styles.input}
           required
         />
         <textarea
-          placeholder="Maelezo ya Somo"
+          placeholder="Lesson Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           style={styles.textarea}
@@ -70,10 +79,10 @@ const VideoUploadOnly = () => {
           style={styles.input}
           required
         >
-          <option value="">Chagua Kiwango</option>
-          <option value="BEGINNER">Mwanzo</option>
-          <option value="INTERMEDIATE">Kati</option>
-          <option value="ADVANCED">Juu</option>
+          <option value="">Select Level</option>
+          <option value="BEGINNER">Beginner</option>
+          <option value="INTERMEDIATE">Intermediate</option>
+          <option value="ADVANCED">Advanced</option>
         </select>
         <input
           type="file"

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const BASE_URL = 'http://192.168.43.33:8080/api';  // Badilisha hapa kwa IP/URL ya backend yako
+const BASE_URL = 'http://192.168.43.33:8080/api';  // Change to your backend URL
 
 const CreateAssessment = () => {
   const [title, setTitle] = useState('');
@@ -15,14 +15,14 @@ const CreateAssessment = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  // Pata lessons kutoka backend
+  // Fetch lessons from backend
   useEffect(() => {
     axios.get(`${BASE_URL}/lessons`)
       .then(res => setLessons(res.data))
       .catch(err => console.error('Failed to fetch lessons:', err));
   }, []);
 
-  // Pata students kutoka backend
+  // Fetch students from backend
   useEffect(() => {
     axios.get(`${BASE_URL}/users/students`)
       .then(res => setStudents(res.data))
@@ -154,7 +154,7 @@ const CreateAssessment = () => {
           type="submit"
           style={{
             padding: '12px 20px',
-            backgroundColor: '#007bff',
+            backgroundColor: 'hsla(210, 100%, 50%, 0.71)',
             color: 'white',
             border: 'none',
             borderRadius: 4,

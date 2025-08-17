@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import AddQuestionForm from './AddQuestionForm';
-
 import axios from 'axios';
 
 const TeacherAssessmentDetail = () => {
@@ -14,7 +13,7 @@ const TeacherAssessmentDetail = () => {
       const res = await axios.get(`http://localhost:8080/api/assessments/${assessmentId}`);
       setAssessment(res.data);
     } catch (err) {
-      console.error('Kosa kwenye ku-fetch assessment:', err);
+      console.error('Error fetching assessment:', err);
     }
   };
 
@@ -23,7 +22,7 @@ const TeacherAssessmentDetail = () => {
       const res = await axios.get(`http://localhost:8080/api/questions/assessment/${assessmentId}`);
       setQuestions(res.data);
     } catch (err) {
-      console.error('Kosa kwenye ku-fetch maswali:', err);
+      console.error('Error fetching questions:', err);
     }
   };
 
@@ -34,13 +33,13 @@ const TeacherAssessmentDetail = () => {
 
   return (
     <div style={styles.container}>
-      <h2>Taarifa za Assessment</h2>
+      <h2>Assessment Details</h2>
       {assessment ? (
         <div style={styles.card}>
-          <p><strong>Kichwa:</strong> {assessment.title}</p>
-          <p><strong>Maelezo:</strong> {assessment.description}</p>
-          <p><strong>Kiwango:</strong> {assessment.level}</p>
-          <p><strong>Tarehe:</strong> {assessment.date}</p>
+          <p><strong>Title:</strong> {assessment.title}</p>
+          <p><strong>Description:</strong> {assessment.description}</p>
+          <p><strong>Level:</strong> {assessment.level}</p>
+          <p><strong>Date:</strong> {assessment.date}</p>
         </div>
       ) : (
         <p>Loading assessment...</p>
@@ -50,9 +49,9 @@ const TeacherAssessmentDetail = () => {
 
       <AddQuestionForm assessmentId={assessmentId} onQuestionAdded={fetchQuestions} />
 
-      <h3>Maswali Yaliyopo</h3>
+      <h3>Existing Questions</h3>
       {questions.length === 0 ? (
-        <p>Hakuna maswali bado.</p>
+        <p>No questions added yet.</p>
       ) : (
         <ul>
           {questions.map((q, index) => (

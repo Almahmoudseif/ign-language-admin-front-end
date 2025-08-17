@@ -1,13 +1,12 @@
-// src/Teacher/TeacherDashboard.js
 import React, { useEffect, useState } from "react";
 import { NavLink, Routes, Route, useNavigate } from "react-router-dom";
 
-// Import components zako
+// Import components
 import Lessons from "./MyLessons";
 import LessonUploadForm from "./LessonUploadForm";
 import TeacherLessonUploadImage from "./TeacherLessonUploadImage";
 import LessonImageList from "./LessonImageList";
-import VideoUploadOnly from "./VideoUploadOnly";   // ✅ default import, sio {}
+import VideoUploadOnly from "./VideoUploadOnly"; // default import
 import LessonVideoList from "./LessonVideoList";
 import MyExams from "./MyExams";
 import MyResults from "./MyResults";
@@ -18,16 +17,16 @@ import CreateAssessment from "./CreateAssessment";
 import AddQuestionForm from "./AddQuestionForm";
 import EditLessonsList from "./EditLessonsList";
 import AssessmentBuilder from "./AssessmentBuilder";
+import TeacherAssessmentDetail from "./TeacherAssessmentDetail"; // ✅ umeongeza hii
 
 const TeacherDashboard = () => {
   const [teacher, setTeacher] = useState(null);
   const navigate = useNavigate();
 
-  // Load teacher data from localStorage
   useEffect(() => {
     const stored = localStorage.getItem("teacher");
     if (stored) setTeacher(JSON.parse(stored));
-    else navigate("/teacher-login"); // redirect if no teacher
+    else navigate("/teacher-login");
   }, [navigate]);
 
   const handleLogout = () => {
@@ -46,21 +45,21 @@ const TeacherDashboard = () => {
       <div style={styles.sidebar}>
         <h2 style={styles.logo}>Teacher Panel</h2>
         <ul style={styles.menu}>
-          <li><NavLink to="lessons" style={navStyle}>📚 Lessons</NavLink></li>
-          <li><NavLink to="upload-lesson" style={navStyle}>⬆️ Upload Lesson</NavLink></li>
-          <li><NavLink to="upload-lesson-image" style={navStyle}>🖼️ Upload Lesson Image</NavLink></li>
-          <li><NavLink to="lesson-images" style={navStyle}>📷 View Lesson Images</NavLink></li>
-          <li><NavLink to="upload-video" style={navStyle}>📹 Upload Video</NavLink></li>
-          <li><NavLink to="lesson-videos" style={navStyle}>📺 View Lesson Videos</NavLink></li>
-          <li><NavLink to="exams" style={navStyle}>📝 Exams</NavLink></li>
-          <li><NavLink to="results" style={navStyle}>📊 Results</NavLink></li>
-          <li><NavLink to="students" style={navStyle}>👥 My Students</NavLink></li>
-          <li><NavLink to="assessments" style={navStyle}>📂 Assessments</NavLink></li>
-          <li><NavLink to="all-assessments" style={navStyle}>📋 All Assessments</NavLink></li>
-          <li><NavLink to="create-assessment" style={navStyle}>➕ Create Assessment</NavLink></li>
-          <li><NavLink to="add-question" style={navStyle}>➕ Add Question</NavLink></li>
-          <li><NavLink to="edit-lessons" style={navStyle}>✏️ Edit Lessons List</NavLink></li>
-          <li><NavLink to="assessment-builder" style={navStyle}>🛠️ Assessment Builder</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/lessons" style={navStyle}>📚 Lessons</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/upload-lesson" style={navStyle}>⬆️ Upload Lesson</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/upload-lesson-image" style={navStyle}>🖼️ Upload Lesson Image</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/lesson-images" style={navStyle}>📷 View Lesson Images</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/upload-video" style={navStyle}>📹 Upload Video</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/lesson-videos" style={navStyle}>📺 View Lesson Videos</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/exams" style={navStyle}>📝 Exams</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/results" style={navStyle}>📊 Results</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/students" style={navStyle}>👥 My Students</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/assessments" style={navStyle}>📂 Assessments</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/all-assessments" style={navStyle}>📋 All Assessments</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/create-assessment" style={navStyle}>➕ Create Assessment</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/add-question" style={navStyle}>➕ Add Question</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/edit-lessons" style={navStyle}>✏️ Edit Lessons List</NavLink></li>
+          <li><NavLink to="/teacher-dashboard/assessment-builder" style={navStyle}>🛠️ Assessment Builder</NavLink></li>
           <li onClick={handleLogout} style={{ ...styles.menuItem, cursor: "pointer" }}>🚪 Logout</li>
         </ul>
       </div>
@@ -84,6 +83,7 @@ const TeacherDashboard = () => {
           <Route path="add-question" element={<AddQuestionForm />} />
           <Route path="edit-lessons" element={<EditLessonsList />} />
           <Route path="assessment-builder" element={<AssessmentBuilder />} />
+          <Route path="assessment/:assessmentId" element={<TeacherAssessmentDetail />} /> {/* ✅ umeongeza route hii */}
           <Route index element={<h2>Select an option from sidebar</h2>} />
         </Routes>
       </div>

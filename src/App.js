@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Admin Components
 import AdminLoginPage from './components/AdminLoginPage';
@@ -15,25 +14,6 @@ import AdminResults from './components/AdminResults';
 import TeacherLoginPage from './Teacher/TeacherLoginPage';
 import TeacherRegisterPage from './Teacher/TeacherRegisterPage';
 import TeacherDashboard from './Teacher/TeacherDashboard';
-import MyLessons from './Teacher/MyLessons';
-import MyExams from './Teacher/MyExams';
-import MyResults from './Teacher/MyResults';
-import MyStudents from './Teacher/MyStudents';
-import MyAssessments from './Teacher/MyAssessments';
-import LessonUploadForm from './Teacher/LessonUploadForm';
-import TeacherLessonUploadImage from './Teacher/TeacherLessonUploadImage';
-import CreateAssessment from './Teacher/CreateAssessment';
-import AddQuestionForm from './Teacher/AddQuestionForm';
-import LessonImageList from './Teacher/LessonImageList';
-import LessonVideoList from './Teacher/LessonVideoList';
-import TeacherAssessmentDetail from './Teacher/TeacherAssessmentDetail';
-import EditLessonsList from './Teacher/EditLessonsList';
-import EditLessonPage from './Teacher/EditLessonPage';
-import { VideoUploadOnly } from './Teacher/TeacherDashboard';
-import AssessmentBuilder from './Teacher/AssessmentBuilder';
-import AllAssessments from './Teacher/AllAssessments';
-import EditAssessment from './Teacher/EditAssessment';
-import ViewAssessment from './Teacher/ViewAssessment';
 
 // Protected Routes
 import { ProtectedRouteTeacher, ProtectedRouteAdmin } from './utils/ProtectedRoutes';
@@ -44,11 +24,14 @@ const App = () => {
       <Routes>
         {/* Admin Routes */}
         <Route path="/" element={<AdminLoginPage />} />
-        <Route path="/admin-dashboard" element={
-          <ProtectedRouteAdmin>
-            <AdminDashboard />
-          </ProtectedRouteAdmin>
-        }>
+        <Route
+          path="/admin-dashboard"
+          element={
+            <ProtectedRouteAdmin>
+              <AdminDashboard />
+            </ProtectedRouteAdmin>
+          }
+        >
           <Route index element={<DashboardHome />} />
           <Route path="teachers" element={<Teachers />} />
           <Route path="lessons" element={<Lessons />} />
@@ -61,11 +44,14 @@ const App = () => {
         <Route path="/teacher-register" element={<TeacherRegisterPage />} />
 
         {/* Teacher Dashboard Routes */}
-        <Route path="/teacher-dashboard/*" element={
-          <ProtectedRouteTeacher>
-            <TeacherDashboard />
-          </ProtectedRouteTeacher>
-        } />
+        <Route
+          path="/teacher-dashboard/*"
+          element={
+            <ProtectedRouteTeacher>
+              <TeacherDashboard />
+            </ProtectedRouteTeacher>
+          }
+        />
 
         {/* Catch-all */}
         <Route path="*" element={<div>404 - Page Not Found</div>} />
@@ -74,4 +60,4 @@ const App = () => {
   );
 };
 
-export default App;    
+export default App;
