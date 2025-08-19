@@ -25,27 +25,27 @@ const AdminDashboard = () => {
             </li>
             <li>
               <NavLink to="teachers" className={({ isActive }) => (isActive ? 'active' : '')}>
-                Walimu
+                Teachers
               </NavLink>
             </li>
             <li>
               <NavLink to="lessons" className={({ isActive }) => (isActive ? 'active' : '')}>
-                Mafunzo
+                Lessons
               </NavLink>
             </li>
             <li>
               <NavLink to="assessments" className={({ isActive }) => (isActive ? 'active' : '')}>
-                Mitihani
+                Assessments
               </NavLink>
             </li>
             <li>
               <NavLink to="results" className={({ isActive }) => (isActive ? 'active' : '')}>
-                Matokeo
+                Results
               </NavLink>
             </li>
             <li>
               <button onClick={handleLogout} className="logout-button">
-                Toka
+                Logout
               </button>
             </li>
           </ul>

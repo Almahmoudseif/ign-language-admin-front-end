@@ -31,13 +31,13 @@ const Lessons = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Una uhakika unataka kufuta somo hili?")) return;
+    if (!window.confirm("Are you sure you want to delete this lesson?")) return;
     try {
       await axios.delete(`http://localhost:8080/api/lessons/${id}`);
       fetchLessons();
     } catch (err) {
       console.error("Delete failed", err);
-      alert("Tatizo kufuta somo.");
+      alert("Error deleting lesson.");
     }
   };
 
@@ -70,7 +70,7 @@ const Lessons = () => {
       fetchLessons();
     } catch (err) {
       console.error("Update failed", err);
-      alert("Tatizo ku-update somo.");
+      alert("Error updating lesson.");
     }
   };
 
@@ -79,12 +79,14 @@ const Lessons = () => {
       ? lessons
       : lessons.filter((l) => l.level === levelFilter);
 
-  if (loading) return <p>Inapakia mafunzo...</p>;
+  if (loading) return <p>Loading lessons...</p>;
 
   return (
-    <div className="lessons-container">
+    <div className="lessons-page">
+      <h1 className="lessons-title">Lessons Management</h1>
+
       <div className="filter">
-        <label>Chuja level: </label>
+        <label>Filter Level: </label>
         <select
           value={levelFilter}
           onChange={(e) => setLevelFilter(e.target.value)}
@@ -97,15 +99,15 @@ const Lessons = () => {
       </div>
 
       {filteredLessons.length === 0 ? (
-        <p>Hakuna mafunzo yaliyopatikana kwa level hii.</p>
+        <p>No lessons found for this level.</p>
       ) : (
         <table className="lessons-table">
           <thead>
             <tr>
-              <th>Jina la Somo</th>
-              <th>Maelezo</th>
+              <th>Lesson Name</th>
+              <th>Description</th>
               <th>Media</th>
-              <th>Vitendo</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -143,14 +145,20 @@ const Lessons = () => {
                         type="file"
                         accept="image/*"
                         onChange={(e) =>
-                          setFormData({ ...formData, imageFile: e.target.files[0] })
+                          setFormData({
+                            ...formData,
+                            imageFile: e.target.files[0],
+                          })
                         }
                       />
                       <input
                         type="file"
                         accept="video/*"
                         onChange={(e) =>
-                          setFormData({ ...formData, videoFile: e.target.files[0] })
+                          setFormData({
+                            ...formData,
+                            videoFile: e.target.files[0],
+                          })
                         }
                       />
                     </>
@@ -165,19 +173,39 @@ const Lessons = () => {
                       <source src={lesson.videoUrl} type="video/mp4" />
                     </video>
                   ) : (
-                    "Hakuna media"
+                    "No media"
                   )}
                 </td>
                 <td>
                   {editingLesson === lesson.id ? (
                     <>
-                      <button onClick={() => handleUpdate(lesson.id)}>💾 Hifadhi</button>
-                      <button onClick={() => setEditingLesson(null)}>❌ Ghairi</button>
+                      <button
+                        className="save-btn"
+                        onClick={() => handleUpdate(lesson.id)}
+                      >
+                        💾 Save
+                      </button>
+                      <button
+                        className="cancel-btn"
+                        onClick={() => setEditingLesson(null)}
+                      >
+                        ❌ Cancel
+                      </button>
                     </>
                   ) : (
                     <>
-                      <button onClick={() => startEdit(lesson)}>✏ Hariri</button>
-                      <button onClick={() => handleDelete(lesson.id)}>🗑 Futa</button>
+                      <button
+                        className="edit-btn"
+                        onClick={() => startEdit(lesson)}
+                      >
+                        ✏ Edit
+                      </button>
+                      <button
+                        className="delete-btn"
+                        onClick={() => handleDelete(lesson.id)}
+                      >
+                        🗑 Delete
+                      </button>
                     </>
                   )}
                 </td>

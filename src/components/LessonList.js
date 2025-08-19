@@ -28,7 +28,7 @@ const LessonList = ({ refresh }) => {
   }, [refresh]);
 
   const handleDelete = async (id) => {
-    if (window.confirm("Una uhakika unataka kufuta somo hili?")) {
+    if (window.confirm("Are you sure you want to delete this lesson?")) {
       try {
         await axios.delete(`http://192.168.43.33:8080/api/lessons/${id}`);
         fetchLessons();
@@ -78,7 +78,7 @@ const LessonList = ({ refresh }) => {
   return (
     <div>
       <div style={{ marginBottom: "15px" }}>
-        <label>Chuja level: </label>
+        <label>Filter Level: </label>
         <select
           value={levelFilter}
           onChange={(e) => setLevelFilter(e.target.value)}
@@ -91,15 +91,15 @@ const LessonList = ({ refresh }) => {
       </div>
 
       {filteredLessons.length === 0 ? (
-        <p>Hakuna mafunzo yaliyopatikana kwa level hii.</p>
+        <p>No lessons found for this level.</p>
       ) : (
         <table className="lessons-table">
           <thead>
             <tr>
-              <th>Jina la Somo</th>
-              <th>Maelezo</th>
+              <th>Lesson Name</th>
+              <th>Description</th>
               <th>Media</th>
-              <th>Vitendo</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -159,19 +159,19 @@ const LessonList = ({ refresh }) => {
                       <source src={lesson.videoUrl} type="video/mp4" />
                     </video>
                   ) : (
-                    "Hakuna media"
+                    "No media"
                   )}
                 </td>
                 <td>
                   {editingLesson === lesson.id ? (
                     <>
-                      <button onClick={() => handleUpdate(lesson.id)}>💾 Hifadhi</button>
-                      <button onClick={() => setEditingLesson(null)}>❌ Ghairi</button>
+                      <button onClick={() => handleUpdate(lesson.id)}>💾 Save</button>
+                      <button onClick={() => setEditingLesson(null)}>❌ Cancel</button>
                     </>
                   ) : (
                     <>
-                      <button onClick={() => startEdit(lesson)}>✏ Hariri</button>
-                      <button onClick={() => handleDelete(lesson.id)}>🗑 Futa</button>
+                      <button onClick={() => startEdit(lesson)}>✏ Edit</button>
+                      <button onClick={() => handleDelete(lesson.id)}>🗑 Delete</button>
                     </>
                   )}
                 </td>

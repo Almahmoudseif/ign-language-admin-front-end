@@ -15,47 +15,47 @@ const DashboardHome = () => {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <h1>👋 Karibu, Admin</h1>
-        <p>Muhtasari wa mfumo wa kujifunza Lugha ya Alama</p>
+        <h1>👋 Welcome, Admin</h1>
+        <p>Overview of the Sign Language Learning System</p>
       </header>
 
       <section className="dashboard-cards">
         <div className="card">
           <FaChalkboardTeacher className="card-icon" />
           <div>
-            <h3>Walimu</h3>
+            <h3>Teachers</h3>
             <p>{teacherCount}</p>
           </div>
         </div>
         <div className="card">
           <FaBook className="card-icon" />
           <div>
-            <h3>Mafunzo</h3>
+            <h3>Lessons</h3>
             <p>15</p>
           </div>
         </div>
         <div className="card">
           <FaClipboardList className="card-icon" />
           <div>
-            <h3>Mitihani</h3>
+            <h3>Assessments</h3>
             <p>6</p>
           </div>
         </div>
         <div className="card">
           <FaChartBar className="card-icon" />
           <div>
-            <h3>Matokeo</h3>
+            <h3>Results</h3>
             <p>21</p>
           </div>
         </div>
       </section>
 
       <section className="recent-activity">
-        <h2>📌 Shughuli za Hivi Karibuni</h2>
+        <h2>📌 Recent Activity</h2>
         <ul>
-          <li>✅ Mwalimu Juma ameongezwa</li>
-          <li>📌 Somo la “Matamshi ya A” limepakiwa</li>
-          <li>📝 Jaribio jipya la Kiswahili limeundwa</li>
+          <li>✅ Teacher Juma has been added</li>
+          <li>📌 Lesson “Pronunciation of A” has been uploaded</li>
+          <li>📝 New Kiswahili assessment has been created</li>
         </ul>
       </section>
     </div>

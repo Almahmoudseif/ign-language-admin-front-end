@@ -25,8 +25,8 @@ const AdminLoginPage = () => {
       const adminData = response.data;
       console.log('Admin logged in:', adminData);
 
-      // Hifadhi data kwenye localStorage
-      localStorage.setItem("token", "admin-logged-in"); // token feki, unaweza baadaye kutumia JWT
+      // Store data in localStorage
+      localStorage.setItem("token", "admin-logged-in"); // fake token, can be replaced with JWT later
       localStorage.setItem("role", adminData.role);
       localStorage.setItem("registrationNumber", adminData.registrationNumber);
 
@@ -34,8 +34,7 @@ const AdminLoginPage = () => {
     } catch (error) {
       console.error(error);
 
-      // Hapa tunahakikisha tunabadilisha object kuwa string
-      let errorMessage = 'Kuna tatizo la kuunganisha na server. Jaribu tena.';
+      let errorMessage = 'Connection issue with the server. Please try again.';
       if (error.response && error.response.data) {
         if (typeof error.response.data === 'string') {
           errorMessage = error.response.data;
@@ -54,13 +53,13 @@ const AdminLoginPage = () => {
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleLogin}>
-        <h2 className="form-title">Karibu Admin</h2>
+        <h2 className="form-title">Welcome Admin</h2>
 
         <div className="input-group">
           <label>Registration Number</label>
           <input
             type="text"
-            placeholder="Ingiza registration number"
+            placeholder="Enter registration number"
             value={registrationNumber}
             onChange={(e) => setRegistrationNumber(e.target.value)}
             required
@@ -68,11 +67,11 @@ const AdminLoginPage = () => {
         </div>
 
         <div className="input-group password-group">
-          <label>Nenosiri</label>
+          <label>Password</label>
           <div className="password-wrapper">
             <input
               type={showPassword ? 'text' : 'password'}
-              placeholder="Ingiza nenosiri"
+              placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -80,7 +79,7 @@ const AdminLoginPage = () => {
             <span
               className="toggle-visibility"
               onClick={() => setShowPassword(!showPassword)}
-              title={showPassword ? 'Ficha nenosiri' : 'Onesha nenosiri'}
+              title={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
             </span>
@@ -88,7 +87,7 @@ const AdminLoginPage = () => {
         </div>
 
         <button className="login-button" type="submit" disabled={loading}>
-          {loading ? 'Iningia...' : 'Ingia'}
+          {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
     </div>

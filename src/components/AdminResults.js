@@ -9,64 +9,94 @@ const AdminResults = () => {
   const fetchResults = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/results');
-      setResults(Array.isArray(response.data) ? response.data : []);
+      const data = response.data;
+
+      if (Array.isArray(data)) {
+        setResults(data);
+      } else if (typeof data === 'object' && data !== null) {
+        setResults([data]);
+      } else {
+        setResults([]);
+      }
     } catch (error) {
       console.error('Error fetching results:', error);
-      alert('Tatizo kupokea data ya matokeo ya wanafunzi.');
+      alert('Error fetching student results.');
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { fetchResults(); }, []);
+  useEffect(() => {
+    fetchResults();
+  }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Una uhakika unataka kufuta matokeo haya?')) return;
+    if (!window.confirm('Are you sure you want to delete this result?')) return;
     try {
       await axios.delete(`http://localhost:8080/api/results/${id}`);
-      alert('Result imefutwa kwa mafanikio.');
+      alert('Result deleted successfully.');
       fetchResults();
     } catch (error) {
       console.error('Error deleting result:', error);
-      alert('Tatizo kufuta result.');
+      alert('Error deleting result.');
     }
   };
 
-  if (loading) return <p className="loading">Inapakia matokeo ya wanafunzi...</p>;
+  if (loading) return <p className="loading">Loading student results...</p>;
 
   return (
-    <div className="results-container">
-      <h2 className="results-title">📊 Matokeo ya Wanafunzi Yote</h2>
+    <div className="results-container" style={{ overflowX: 'auto' }}>
+      <h2 className="results-title">📊 All Student Results</h2>
       {results.length === 0 ? (
-        <p className="no-data">Hakuna matokeo yaliyopatikana.</p>
+        <p className="no-data">No results found.</p>
       ) : (
-        <table className="results-table">
+        <table
+          className="results-table"
+          style={{
+            width: '1200px',
+            minWidth: '100%',
+            borderCollapse: 'collapse',
+          }}
+        >
           <thead>
             <tr>
-              <th>Student ID</th>
-              <th>Mwanafunzi</th>
-              <th>Assessment ID</th>
-              <th>Somo</th>
-              <th>Assessment</th>
-              <th>Alama</th>
-              <th>Grade</th>
-              <th>Submitted At</th>
-              <th>Action</th>
+              <th style={{ padding: '10px' }}>Student ID</th>
+              <th style={{ padding: '10px' }}>Assessment ID</th>
+              <th style={{ padding: '10px' }}>Assessment</th>
+              <th style={{ padding: '10px' }}>Score</th>
+              <th style={{ padding: '10px' }}>Grade</th>
+              <th style={{ padding: '10px' }}>Submitted At</th>
+              <th style={{ padding: '10px' }}>Action</th>
             </tr>
           </thead>
           <tbody>
-            {results.map(r => (
+            {results.map((r) => (
               <tr key={r.id}>
-                <td>{r.student?.id ?? 'Unknown'}</td>
-                <td>{r.student?.name ?? 'Unknown'}</td>
-                <td>{r.assessment?.id ?? 'Unknown'}</td>
-                <td>{r.assessment?.lesson?.title ?? 'Unknown'}</td>
-                <td>{r.assessment?.title ?? 'Unknown'}</td>
-                <td>{r.score}</td>
-                <td>{r.grade}</td>
-                <td>{r.submittedAt ? new Date(r.submittedAt).toLocaleString() : 'Unknown'}</td>
-                <td>
-                  <button className="delete-btn" onClick={() => handleDelete(r.id)}>Delete</button>
+                <td style={{ padding: '10px' }}>{r.student?.id ?? 'Unknown'}</td>
+                <td style={{ padding: '10px' }}>{r.assessment?.id ?? 'Unknown'}</td>
+                <td style={{ padding: '10px' }}>{r.assessment?.title ?? 'Unknown'}</td>
+                <td style={{ padding: '10px' }}>{r.score}</td>
+                <td style={{ padding: '10px' }}>{r.grade}</td>
+                <td style={{ padding: '10px' }}>
+                  {r.submittedAt
+                    ? new Date(r.submittedAt).toLocaleString()
+                    : 'Unknown'}
+                </td>
+                <td style={{ padding: '10px' }}>
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(r.id)}
+                    style={{
+                      backgroundColor: 'red',
+                      color: 'white',
+                      border: 'none',
+                      padding: '6px 12px',
+                      cursor: 'pointer',
+                      borderRadius: 4,
+                    }}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}

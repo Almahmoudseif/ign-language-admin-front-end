@@ -57,37 +57,37 @@
   transition: background 0.3s;
 }
 
-/* Specific button colors */
-.lessons-table button:nth-child(1) {
-  background-color: #3498db; /* Hariri / Edit */
+/* Edit and Delete button colors */
+.lessons-table button.edit-btn {
+  background-color: #3498db; /* Edit = Blue */
 }
 
-.lessons-table button:nth-child(2) {
-  background-color: #e74c3c; /* Futa / Delete */
+.lessons-table button.delete-btn {
+  background-color: #e74c3c; /* Delete = Red */
 }
 
-.lessons-table button:nth-child(1):hover {
+.lessons-table button.edit-btn:hover {
   background-color: #2980b9;
 }
 
-.lessons-table button:nth-child(2):hover {
+.lessons-table button.delete-btn:hover {
   background-color: #c0392b;
 }
 
 /* Save and Cancel buttons when editing */
-.lessons-table td button:nth-child(1) {
-  background-color: #2ecc71; /* Hifadhi / Save */
+.lessons-table td button.save-btn {
+  background-color: #2ecc71; /* Save = Green */
 }
 
-.lessons-table td button:nth-child(2) {
-  background-color: #95a5a6; /* Ghairi / Cancel */
+.lessons-table td button.cancel-btn {
+  background-color: #95a5a6; /* Cancel = Grey */
 }
 
-.lessons-table td button:nth-child(1):hover {
+.lessons-table td button.save-btn:hover {
   background-color: #27ae60;
 }
 
-.lessons-table td button:nth-child(2):hover {
+.lessons-table td button.cancel-btn:hover {
   background-color: #7f8c8d;
 }
 

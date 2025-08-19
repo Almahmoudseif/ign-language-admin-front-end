@@ -6,7 +6,6 @@ const ResultList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Form state to add new result
   const [newResult, setNewResult] = useState({
     studentId: "",
     assessmentId: "",
@@ -14,7 +13,6 @@ const ResultList = () => {
     grade: "",
   });
 
-  // Fetch all results
   const fetchResults = async () => {
     setLoading(true);
     try {
@@ -32,21 +30,16 @@ const ResultList = () => {
     fetchResults();
   }, []);
 
-  // Handle form inputs
   const handleChange = (e) => {
     setNewResult({ ...newResult, [e.target.name]: e.target.value });
   };
 
-  // Submit new result
   const handleAddResult = async (e) => {
     e.preventDefault();
-
-    // Simple validation
     if (!newResult.studentId || !newResult.assessmentId || !newResult.score) {
       alert("Student, Assessment and Score are required");
       return;
     }
-
     try {
       await axios.post("http://localhost:8080/api/results", {
         student: { id: parseInt(newResult.studentId) },
@@ -63,10 +56,8 @@ const ResultList = () => {
     }
   };
 
-  // Delete result
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this result?")) return;
-
     try {
       await axios.delete(`http://localhost:8080/api/results/${id}`);
       alert("Result deleted");
@@ -80,8 +71,8 @@ const ResultList = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div style={{ maxWidth: 900, margin: "auto", padding: 20 }}>
-      <h2>Results</h2>
+    <div style={{ width: "1200px", margin: "auto", padding: 30, fontSize: 16 }}>
+      <h2 style={{ marginBottom: 20, fontSize: 24 }}>Results</h2>
 
       {/* Add Result Form */}
       <form onSubmit={handleAddResult} style={{ marginBottom: 30 }}>
@@ -92,7 +83,7 @@ const ResultList = () => {
           value={newResult.studentId}
           onChange={handleChange}
           required
-          style={{ marginRight: 10, padding: 5 }}
+          style={{ marginRight: 12, padding: "8px 10px", fontSize: 16 }}
         />
         <input
           type="number"
@@ -101,7 +92,7 @@ const ResultList = () => {
           value={newResult.assessmentId}
           onChange={handleChange}
           required
-          style={{ marginRight: 10, padding: 5 }}
+          style={{ marginRight: 12, padding: "8px 10px", fontSize: 16 }}
         />
         <input
           type="number"
@@ -111,7 +102,7 @@ const ResultList = () => {
           value={newResult.score}
           onChange={handleChange}
           required
-          style={{ marginRight: 10, padding: 5 }}
+          style={{ marginRight: 12, padding: "8px 10px", fontSize: 16 }}
         />
         <input
           type="text"
@@ -119,9 +110,16 @@ const ResultList = () => {
           placeholder="Grade (optional)"
           value={newResult.grade}
           onChange={handleChange}
-          style={{ marginRight: 10, padding: 5 }}
+          style={{ marginRight: 12, padding: "8px 10px", fontSize: 16 }}
         />
-        <button type="submit" style={{ padding: "5px 10px" }}>
+        <button
+          type="submit"
+          style={{
+            padding: "8px 16px",
+            fontSize: 16,
+            cursor: "pointer",
+          }}
+        >
           Add Result
         </button>
       </form>
@@ -134,37 +132,40 @@ const ResultList = () => {
           style={{
             width: "100%",
             borderCollapse: "collapse",
-            border: "1px solid #ddd",
+            border: "2px solid #ccc",
+            fontSize: 16,
           }}
         >
           <thead>
             <tr>
-              <th>#</th>
-              <th>Student ID</th>
-              <th>Assessment ID</th>
-              <th>Score</th>
-              <th>Grade</th>
-              <th>Submitted At</th>
-              <th>Actions</th>
+              <th style={{ padding: "10px 12px" }}>#</th>
+              <th style={{ padding: "10px 12px" }}>Student ID</th>
+              <th style={{ padding: "10px 12px" }}>Assessment ID</th>
+              <th style={{ padding: "10px 12px" }}>Score</th>
+              <th style={{ padding: "10px 12px" }}>Grade</th>
+              <th style={{ padding: "10px 12px" }}>Submitted At</th>
+              <th style={{ padding: "10px 12px" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {results.map((r, i) => (
-              <tr key={r.id}>
-                <td>{i + 1}</td>
-                <td>{r.student?.id}</td>
-                <td>{r.assessment?.id}</td>
-                <td>{r.score}</td>
-                <td>{r.grade}</td>
-                <td>{new Date(r.submittedAt).toLocaleString()}</td>
-                <td>
+              <tr key={r.id} style={{ textAlign: "center", height: 50 }}>
+                <td style={{ padding: "10px 12px" }}>{i + 1}</td>
+                <td style={{ padding: "10px 12px" }}>{r.student?.id}</td>
+                <td style={{ padding: "10px 12px" }}>{r.assessment?.id}</td>
+                <td style={{ padding: "10px 12px" }}>{r.score}</td>
+                <td style={{ padding: "10px 12px" }}>{r.grade ?? "N/A"}</td>
+                <td style={{ padding: "10px 12px" }}>
+                  {r.submittedAt ? new Date(r.submittedAt).toLocaleString() : "Unknown"}
+                </td>
+                <td style={{ padding: "10px 12px" }}>
                   <button
                     onClick={() => handleDelete(r.id)}
                     style={{
                       backgroundColor: "red",
                       color: "white",
                       border: "none",
-                      padding: "4px 8px",
+                      padding: "6px 12px",
                       cursor: "pointer",
                       borderRadius: 4,
                     }}
